@@ -1,0 +1,9 @@
+#!/bin/bash
+
+args=
+for arg in $* ; do
+   if [ $arg == vt7 -o "$arg" == "-novtswitch" ] ; then continue ; fi
+   args="$args $arg"
+done
+
+exec /usr/bin/Xvnc -rfbauth /etc/vncpasswd -geometry 1280x720 -alwaysshared $args

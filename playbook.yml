@@ -1,0 +1,47 @@
+---
+- hosts: all
+  user:  ubuntu
+  sudo:  True
+  vars:
+     codename: ${ansible_lsb.codename}
+  tasks:
+  - name:   set hostname in configuration file
+    action: template src=etc/hostname.j2 dest=/etc/hostname
+    notify: set hostname in running system
+  - name:   store dpkg non-interactive selections
+    action: template src=etc/dpkg-selections dest=/etc/dpkg-selections
+    notify: set dpkg selections
+  - name:   add the partner repo to apt
+    action: apt_repository repo="deb http://archive.canonical.com/ $codename partner"
+    # FIXME: we need a reboot handler to handle this one if it changes anything
+  - name:   install necessary software
+    action: apt pkg=gstreamer0.10-pulseaudio,gstreamer0.10-plugins-ugly,gstreamer0.10-plugins-good,gstreamer0.10-plugins-bad,gstreamer0.10-nice,gstreamer0.10-fluendo-mp3,gstreamer0.10-tools,gstreamer-tools,libpulse0:i386,libasound2-plugins:i386,mumble,paman,pavucontrol,procps,curl,skype,mumble-server,qjackctl,jackd2,pulseaudio-module-jack,jamin,jack-mixer,vnc4server,debconf-utils,adobe-flashplugin,lightdm,unity-2d-shell,gnome-session,metacity,nautilus,unity-2d-panel,gedit state=present
+  - name:   create studio directory
+    action: file path=/home/ubuntu/Studio state=directory owner=ubuntu
+  - name:   create recordings directory
+    action: file path=/home/ubuntu/Studio/Recordings state=directory owner=ubuntu
+  - name:   set up pulse client
+    action: template src=etc/pulse/client.conf dest=/etc/pulse/client.conf
+  - name:   set up pulse daemon
+    action: template src=etc/pulse/daemon.conf dest=/etc/pulse/daemon.conf
+  - name:   relax security limits
+    action: template src=etc/security/limits.conf dest=/etc/security/limits.conf
+  - name:    create password reset script
+    action:  template src=usr/local/bin/resetpassword dest=/usr/local/bin/resetpassword mode=0700
+  - name:    change password (if requested)
+    action:  command /usr/local/bin/resetpassword ${changepassword}
+    only_if: "is_set('${changepassword}')"
+  - name:    set up LightDM for VNC access
+    action:  template src=etc/lightdm/lightdm.conf dest=/etc/lightdm/lightdm.conf
+    notify:  restart lightdm
+  - name:    create Xvnc script to launch Xvnc properly with password authentication
+    action:  template src=usr/local/bin/Xvnc dest=/usr/local/bin/Xvnc mode=0755
+    notify:  restart lightdm
+  handlers:
+  - name:   set dpkg selections
+    action: command /usr/bin/debconf-set-selections /etc/dpkg-selections
+  - name:   set hostname in running system
+    action: command /bin/hostname $inventory_hostname
+  - name:   restart lightdm
+    action: service name=lightdm state=restarted enabled=yes
+  
