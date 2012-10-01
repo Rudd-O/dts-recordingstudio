@@ -1,5 +1,16 @@
 !Setting up
 
+# clone this repository
+# git submodule update
 # install ansible dependencies (PyYAML, jinja2, paramiko)
 # source ansible/hacking/env-setup
 # export ANSIBLE_HOSTS=$PWD/hosts
+
+!Launching the instance
+
+# make sure your amazon credentials are in the environment
+# create the necessary elastic IP through the EC2 console
+# change the settings section in the launch script
+## the correct elastic IP needs to be there
+# change the hosts file to point to the elastic IP address of the studio
+## originally it says studio.declinefm.com
