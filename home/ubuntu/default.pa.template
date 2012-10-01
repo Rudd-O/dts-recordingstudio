@@ -1,0 +1,10 @@
+#!/usr/bin/pulseaudio -nF
+
+### Automatically augment property information from .desktop files
+### stored in /usr/share/application
+load-module module-augment-properties
+
+load-module module-jack-sink   connect=0 channels=1 sink_name=out  client_name=%APP%_out sink_properties="device.description='Application out'"
+load-module module-jack-source connect=0 channels=1 source_name=in client_name=%APP%_in  source_properties="device.description='Application in'"
+
+load-module module-native-protocol-unix socket=/tmp/pulse-%APP%.socket
