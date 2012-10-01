@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import boto.ec2
+import time
+import subprocess
+import glob
+
+# =========== settings =====================
+
+REGION = "us-east-1"
+AMI = "ami-a29943cb" # precise 64 east ebs http://cloud.ubuntu.com/ami/
+INSTANCE_TYPE = "m1.large"
+ELASTIC_IP = "184.73.165.116"
+SETUP_SCRIPT = """#!/bin/bash -x
+exec &>> /var/log/cloud-init.log
+set -x
+homedir=/home/ubuntu
+# set up ssh key
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAmoeumqdLmMSWfuiSS+PbweNEQKogFxpONsL5t+tSyfW0SEZDXQnhmvAG8Oj00FywC89/wjYxHQCloe/6Qqcx2y3lGjk2Kiym7FcuFxXDuxxo03JDW3VM+Nm0rbnsqXVBY0f1ARbJhFrt2iiqVLBt97RQKIXVs0oR8MOQAyB34nlGx3g5Mdxd6A+UWTiYLVCtkCklNjGAFL1oOG4j1eYN+op9/WnsyuI6viLrQtOdRUe0zavbHlj56eQwvszSiphCkYpg8oNqECwMEYOWf+A1SyZAol95oK8/QaKtXgWupXolarq2uExig47UpKf5JfzZcEjCERUwc9/Vs89PDR2H3Q== rudd-o@karen" >> $homedir/.ssh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCgrwFxvP8S5wlG+rcoWTyfJN6526BYFASt1Xgs1nFuA8/NFjUyQiSX1IvnWTupwS+2zveFncAMLTUPED+6qIOFmhzYIEfFEcTlap+8RKU9Cydbbhv5GChoN4dcbysRJ8g6vfye1SqVE/iHcglYRQHpXgGsP9vuv5vpIVGH39l7Pssd7lAVjbFJ/tmEtyk7BNWi6sgZVEV7McsA9D/qqtoXlAJ6Hm+O4R00UQkJZhdmZUBp+zKLrvIl3IvYGkvGj+p/7bh1+3XHqEhmtxb/Pdv3ziYNKPOUKIBGUBa7uAA+g3pWl5/0oTUX2UWHC8URij6i4cd3ckLVQOF5k6DjumbR nevermaker@gmail.com" >> $homedir/.ssh/authorized_keys
+"""
+
+# ========== set up the machine ============
+
+conn = boto.ec2.connect_to_region(REGION)
+
+if len(sys.argv) > 1:
+	instance_id = sys.argv[1]
+
+else:
+	resv = conn.run_instances(
+		AMI,
+		instance_type=INSTANCE_TYPE,
+		user_data=SETUP_SCRIPT,
+	)
+	instance_id = resv.instances[0].id
+
+while True:
+	try:
+		i = conn.get_all_instances([instance_id])[0].instances[0]
+	except Exception,e:
+		time.sleep(1)
+		i = conn.get_all_instances([instance_id])[0].instances[0]
+	if i.state == "running": break
+	print i.id, i.state, i.instance_type, i.ip_address
+	time.sleep(5)
+
+conn.associate_address(instance_id, ELASTIC_IP)

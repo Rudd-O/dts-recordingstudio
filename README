@@ -1,0 +1,5 @@
+!Setting up
+
+# install ansible dependencies (PyYAML, jinja2, paramiko)
+# source ansible/hacking/env-setup
+# export ANSIBLE_HOSTS=$PWD/hosts
