@@ -1,7 +1,15 @@
 ---
 - hosts: all
+  gather_facts: false
   user:  ubuntu
   sudo:  True
+  tasks:
+  - action: apt pkg=python-zmq,python-keyczar state=installed
+  - action: fireball
+
+
+- hosts: all
+  connection:  fireball
   vars:
      codename: ${ansible_lsb.codename}
   tasks:
@@ -13,13 +21,26 @@
     notify: set dpkg selections
   - name:   add the partner repo to apt
     action: apt_repository repo="deb http://archive.canonical.com/ $codename partner"
-    # FIXME: we need a reboot handler to handle this one if it changes anything
+    # FIXME: we need a reboot handler to handle this one if it changes anything and the change requires a reboot to be applied
+    # FIXME: reverse-engineer ubuntu's GUI restart notification when logging off
   - name:   install necessary software
-    action: apt pkg=gstreamer0.10-pulseaudio,gstreamer0.10-plugins-ugly,gstreamer0.10-plugins-good,gstreamer0.10-plugins-bad,gstreamer0.10-nice,gstreamer0.10-fluendo-mp3,gstreamer0.10-tools,gstreamer-tools,libpulse0:i386,libasound2-plugins:i386,mumble,paman,pavucontrol,procps,curl,skype,mumble-server,qjackctl,jackd2,pulseaudio-module-jack,jamin,jack-mixer,vnc4server,debconf-utils,adobe-flashplugin,lightdm,unity-2d-shell,gnome-session,metacity,nautilus,unity-2d-panel,gedit state=present
+    action: apt pkg=gstreamer0.10-pulseaudio,gstreamer0.10-plugins-ugly,gstreamer0.10-plugins-good,gstreamer0.10-plugins-bad,gstreamer0.10-nice,gstreamer0.10-fluendo-mp3,gstreamer0.10-tools,gstreamer-tools,libpulse0:i386,libasound2-plugins:i386,mumble,paman,pavucontrol,procps,curl,skype,mumble-server,qjackctl,jackd2,pulseaudio-module-jack,jamin,jack-mixer,vnc4server,debconf-utils,adobe-flashplugin,lightdm,unity-2d-shell,gnome-session,metacity,nautilus,unity-2d-panel,gedit,gnome-terminal,ubuntu-desktop state=present
   - name:   create studio directory
     action: file path=/home/ubuntu/Studio state=directory owner=ubuntu
   - name:   create recordings directory
     action: file path=/home/ubuntu/Studio/Recordings state=directory owner=ubuntu
+  - name:     check for patchbay file
+    action:   shell bash -c "test -f /home/ubuntu/patchbay.xml && echo yes || echo no"
+    register: patchbay_exists
+  - name:    copy patchbay file
+    action:  copy src=home/ubuntu/patchbay.xml dest=/home/ubuntu/patchbay.xml owner=ubuntu
+    only_if: "'${patchbay_exists.stdout}' == 'no'"
+  - name:     check for jack mixer file
+    action:   shell bash -c "test -f /home/ubuntu/jack_mixer.xml && echo yes || echo no"
+    register: jack_mixer_exists
+  - name:    copy jack mixer file
+    action:  copy src=home/ubuntu/jack_mixer.xml dest=/home/ubuntu/jack_mixer.xml owner=ubuntu
+    only_if: "'${jack_mixer_exists.stdout}' == 'no'"
   - name:   set up pulse client
     action: template src=etc/pulse/client.conf dest=/etc/pulse/client.conf
   - name:   set up pulse daemon
@@ -31,11 +52,19 @@
   - name:    change password (if requested)
     action:  command /usr/local/bin/resetpassword ${changepassword}
     only_if: "is_set('${changepassword}')"
-  - name:    set up LightDM for VNC access
-    action:  template src=etc/lightdm/lightdm.conf dest=/etc/lightdm/lightdm.conf
+  - name:    create startjack script
+    action:  copy src=usr/local/bin/startjack dest=/usr/local/bin/startjack mode=0755
     notify:  restart lightdm
+  - name:    create startjack autostart file
+    action:  copy src=etc/xdg/autostart/startjack.desktop dest=/etc/xdg/autostart/startjack.desktop
+  - name:    copy pulseaudio default script template
+    action:  copy src=home/ubuntu/default.pa.template dest=/home/ubuntu/default.pa.template
+  - name:    create PulseAudio wrapper script to launch apps
+    action:  template src=usr/local/bin/pawrapper dest=/usr/local/bin/pawrapper mode=0755
   - name:    create Xvnc script to launch Xvnc properly with password authentication
     action:  template src=usr/local/bin/Xvnc dest=/usr/local/bin/Xvnc mode=0755
+  - name:    set up LightDM for VNC access
+    action:  template src=etc/lightdm/lightdm.conf dest=/etc/lightdm/lightdm.conf
     notify:  restart lightdm
   handlers:
   - name:   set dpkg selections

@@ -1,0 +1,62 @@
+<!DOCTYPE patchbay>
+<patchbay version="0.3.8" name="patchbay">
+ <output-sockets>
+  <socket exclusive="off" client="skype_out" type="jack-audio" name="Skype out">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="mumble_out" type="jack-audio" name="Mumble out">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="alsa-jack\.pcm\.jacksfxP\.[0-9]+\.0" type="jack-audio" name="Effects">
+   <plug>out_000</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Jack Mixer Skype Out">
+   <plug>skype Out</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Jack Mixer Mumble Out">
+   <plug>mumble Out</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Jack Mixer Effects Out">
+   <plug>sfx Out</plug>
+  </socket>
+ </output-sockets>
+ <input-sockets>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Jack Mixer Skype In">
+   <plug>skype</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Jack Mixer Mumble In">
+   <plug>mumble</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Jack Mixer Effects In">
+   <plug>sfx</plug>
+  </socket>
+  <socket exclusive="off" client="skype_in" type="jack-audio" name="Skype in">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="mumble_in" type="jack-audio" name="Mumble in">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="premastered" type="jack-audio" name="Premastered">
+   <plug>in_premastered_1</plug>
+  </socket>
+  <socket exclusive="off" client="live" type="jack-audio" name="Live">
+   <plug>in_live_1</plug>
+  </socket>
+ </input-sockets>
+ <slots/>
+ <cables>
+  <cable output="Skype out" input="Jack Mixer Skype In" type="jack-audio"/>
+  <cable output="Mumble out" input="Jack Mixer Mumble In" type="jack-audio"/>
+  <cable output="Effects" input="Jack Mixer Effects In" type="jack-audio"/>
+  <cable output="Jack Mixer Skype Out" input="Mumble in" type="jack-audio"/>
+  <cable output="Jack Mixer Skype Out" input="Premastered" type="jack-audio"/>
+  <cable output="Jack Mixer Skype Out" input="Live" type="jack-audio"/>
+  <cable output="Jack Mixer Mumble Out" input="Skype in" type="jack-audio"/>
+  <cable output="Jack Mixer Mumble Out" input="Premastered" type="jack-audio"/>
+  <cable output="Jack Mixer Mumble Out" input="Live" type="jack-audio"/>
+  <cable output="Jack Mixer Effects Out" input="Live" type="jack-audio"/>
+  <cable output="Jack Mixer Effects Out" input="Skype in" type="jack-audio"/>
+  <cable output="Jack Mixer Effects Out" input="Mumble in" type="jack-audio"/>
+ </cables>
+</patchbay>
+

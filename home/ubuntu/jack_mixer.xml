@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<jack_mixer geometry="424x540">
+	<input_channel balance="0.000000" balance_midi_cc="12" name="mumble" type="mono" volume="0.000000" volume_midi_cc="11"/>
+	<input_channel balance="0.000000" balance_midi_cc="14" name="skype" type="mono" volume="-6.100000" volume_midi_cc="13"/>
+	<input_channel balance="0.000000" balance_midi_cc="16" name="sfx" type="mono" volume="0.000000" volume_midi_cc="15"/>
+	<input_channel balance="0.000000" balance_midi_cc="18" name="prerecorded" type="mono" volume="0.000000" volume_midi_cc="17"/>
+	<output_channel balance="0.000000" muted_channels="sfx" name="premastered" type="stereo" volume="0.000000"/>
+	<output_channel balance="0.000000" name="live" type="stereo" volume="0.000000"/>
+	<main_mix_channel balance="0.000000" balance_midi_cc="8" volume="0.000000" volume_midi_cc="7"/>
+</jack_mixer>
