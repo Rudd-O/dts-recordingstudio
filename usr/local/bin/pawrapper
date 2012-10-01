@@ -29,7 +29,7 @@ if [ "$pulseaudio_running" == "no" ] ; then
 	sleep 0.25
 	sed "s/%APP%/$APPNAME/" < $HOME/default.pa.template > $HOME/default.pa."$APPNAME"
 	pulseaudio -nF $HOME/default.pa."$APPNAME" --realtime &
-	sleep 0.25
+	sleep 1
 	sudo chrt -a -f -p 68 `pgrep -f "pulseaudio.*default.pa.$APPNAME"`
 	export DBUS_SESSION_BUS_ADDRESS="$OLDBUS"
 fi
