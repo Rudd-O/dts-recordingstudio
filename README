@@ -2,7 +2,7 @@
 
 # clone this repository
 # git submodule update
-# install ansible dependencies (PyYAML, jinja2, paramiko)
+# install ansible dependencies (PyYAML, jinja2, paramiko, python-zmq, python-keyczar)
 # source ansible/hacking/env-setup
 # export ANSIBLE_HOSTS=$PWD/hosts
 
