@@ -50,3 +50,9 @@ while True:
 	time.sleep(5)
 
 conn.associate_address(instance_id, ELASTIC_IP)
+
+print "Now you are ready to log into the instance"
+print "and to set it up using ansible"
+print "IP address: %s"%ELASTIC_IP
+print "Refer to the README for ansible information"
+

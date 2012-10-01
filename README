@@ -1,4 +1,4 @@
-!Setting up
+!Setting up the software to run on your computer
 
 # clone this repository
 # git submodule update
@@ -14,3 +14,9 @@
 ## the correct elastic IP needs to be there
 # change the hosts file to point to the elastic IP address of the studio
 ## originally it says studio.declinefm.com
+
+!Configuring the instance
+# The first time (to set a password)
+## `ansible-playbook playbook.yml --extra-vars "changepassword=yournewpassword"`
+# From then on
+## `ansible-playbook playbook.yml`
