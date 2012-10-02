@@ -1,0 +1,8 @@
+#!/bin/bash
+
+exec &>> $HOME/.studio-errors
+
+set -x
+set -e
+
+exec /usr/local/bin/pawrapper mumble /usr/bin/mumble

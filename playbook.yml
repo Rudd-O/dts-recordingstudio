@@ -61,6 +61,8 @@
     action:  copy src=home/ubuntu/default.pa.template dest=/home/ubuntu/default.pa.template
   - name:    create PulseAudio wrapper script to launch apps
     action:  template src=usr/local/bin/pawrapper dest=/usr/local/bin/pawrapper mode=0755
+  - name:    create Mumble wrapper
+    action:  template src=usr/local/bin/mumble dest=/usr/local/bin/mumble mode=0755
   - name:    create Xvnc script to launch Xvnc properly with password authentication
     action:  template src=usr/local/bin/Xvnc dest=/usr/local/bin/Xvnc mode=0755
   - name:    set up LightDM for VNC access
