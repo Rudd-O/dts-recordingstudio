@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -e
+
+[ -f "$1" ] || { echo usage: encodetomp3 filename ; exit 64 ; }
+
+[ -n "$STUDIOARCHIVEDIR" ]   || export STUDIOARCHIVEDIR=~/Documents/Studio\ archive
+[ -n "$SHOWNUMBERREGEXP" ]   || export SHOWNUMBERREGEXP="Decline to State show (\d+)"
+[ -n "$SHOWTITLEPREFIX" ]    || export SHOWTITLEPREFIX="Show #"
+[ -n "$SHOWFILENAMEPREFIX" ] || export SHOWFILENAMEPREFIX="Decline to State show "
+[ -n "$SHOWSOURCEURL" ]      || export SHOWSOURCEURL="http://declinefm.com/archives"
+
+enddir="$STUDIOARCHIVEDIR"/`date "+%Y-%m-%d"`
+
+mkdir -p "$enddir"
+shownum=`python -c 'import urllib2, urllib
+import xml.dom.minidom as dom
+import os.path
+import re
+
+showurl = os.environ["SHOWSOURCEURL"]
+shownumberexp = os.environ["SHOWNUMBERREGEXP"]
+
+req = urllib2.urlopen(showurl)
+data = req.read()
+domtree = dom.parseString(data)
+urls = [ a.getAttribute("href") for a in domtree.getElementsByTagName("a") ]
+urls = [ urllib.unquote(u) for u in urls ]
+matches = [ int(re.findall(shownumberexp,u)[0]) for u in urls if re.findall(shownumberexp,u) ]
+highest = max(matches)
+next = highest + 1
+print "%04d"%next
+'`
+showshortnum=`python -c "print int('$shownum')"`
+longdate=`date "+%B %d %Y"`
+
+filenametoupload="$enddir"/"$SHOWFILENAMEPREFIX""$shownum $longdate.mp3"
+year=`date "+%Y"`
+if [ ! -f "$filenametoupload" ] ; then
+lame --replaygain-accurate -q0 -b 96 "$1" "$filenametoupload"
+fi
+
+showtitle="$SHOWTITLEPREFIX""$showshortnum: $longdate"
+id3tag -a"The Decline to State team" -s"$showtitle" -y$year "$filenametoupload"
+
+echo
+echo "Preparation done.  Parameters for upload:"
+echo Show file name: `basename "$filenametoupload"`
+echo Show title: "$showtitle"
