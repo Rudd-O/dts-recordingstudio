@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+host=`head -1 ~/.studiohosts`
+
+vinagre $host:0 &
