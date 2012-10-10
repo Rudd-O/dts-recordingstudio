@@ -35,6 +35,12 @@
     action:  copy src=home/ubuntu/jack_mixer.xml dest=/home/ubuntu/jack_mixer.xml owner=ubuntu
   - name:    copy ALSA asoundrc
     action:  copy src=home/ubuntu/.asoundrc dest=/home/ubuntu/.asoundrc owner=ubuntu
+  - name:   create config directory
+    action: file path=/home/ubuntu/.config state=directory owner=ubuntu
+  - name:   create QjackCtl config directory
+    action: file path=/home/ubuntu/.config/rncbc.org state=directory owner=ubuntu
+  - name:    copy QjackCtl configuration
+    action:  copy src=home/ubuntu/.config/rncbc.org/QjackCtl.conf dest=/home/ubuntu/.config/rncbc.org/QjackCtl.conf owner=ubuntu
   - name:   set up pulse client
     action: template src=etc/pulse/client.conf dest=/etc/pulse/client.conf
   - name:   set up pulse daemon
