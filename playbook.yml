@@ -52,17 +52,22 @@
   - name:    change password (if requested)
     action:  command /usr/local/bin/resetpassword ${changepassword}
     only_if: "is_set('${changepassword}')"
-  - name:    create startjack script
-    action:  copy src=usr/local/bin/startjack dest=/usr/local/bin/startjack mode=0755
-    notify:  restart lightdm
-  - name:    create startjack autostart file
-    action:  copy src=etc/xdg/autostart/startjack.desktop dest=/etc/xdg/autostart/startjack.desktop
   - name:    copy pulseaudio default script template
     action:  copy src=home/ubuntu/default.pa.template dest=/home/ubuntu/default.pa.template
   - name:    create PulseAudio wrapper script to launch apps
     action:  template src=usr/local/bin/pawrapper dest=/usr/local/bin/pawrapper mode=0755
   - name:    create Mumble wrapper
     action:  template src=usr/local/bin/mumble dest=/usr/local/bin/mumble mode=0755
+  - name:    create Skype wrapper
+    action:  template src=usr/local/bin/skype dest=/usr/local/bin/skype mode=0755
+  - name:    create startjack script
+    action:  copy src=usr/local/bin/startjack dest=/usr/local/bin/startjack mode=0755
+  - name:    create startapps script
+    action:  copy src=usr/local/bin/startapps dest=/usr/local/bin/startapps mode=0755
+  - name:    create startjack autostart file
+    action:  copy src=etc/xdg/autostart/startjack.desktop dest=/etc/xdg/autostart/startjack.desktop
+  - name:    create startapps autostart file
+    action:  copy src=etc/xdg/autostart/startapps.desktop dest=/etc/xdg/autostart/startapps.desktop
   - name:    create Xvnc script to launch Xvnc properly with password authentication
     action:  template src=usr/local/bin/Xvnc dest=/usr/local/bin/Xvnc mode=0755
   - name:    set up LightDM for VNC access
