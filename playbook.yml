@@ -29,18 +29,10 @@
     action: file path=/home/ubuntu/Studio state=directory owner=ubuntu
   - name:   create recordings directory
     action: file path=/home/ubuntu/Studio/Recordings state=directory owner=ubuntu
-  - name:     check for patchbay file
-    action:   shell bash -c "test -f /home/ubuntu/patchbay.xml && echo yes || echo no"
-    register: patchbay_exists
   - name:    copy patchbay file
     action:  copy src=home/ubuntu/patchbay.xml dest=/home/ubuntu/patchbay.xml owner=ubuntu
-    only_if: "'${patchbay_exists.stdout}' == 'no'"
-  - name:     check for jack mixer file
-    action:   shell bash -c "test -f /home/ubuntu/jack_mixer.xml && echo yes || echo no"
-    register: jack_mixer_exists
   - name:    copy jack mixer file
     action:  copy src=home/ubuntu/jack_mixer.xml dest=/home/ubuntu/jack_mixer.xml owner=ubuntu
-    only_if: "'${jack_mixer_exists.stdout}' == 'no'"
   - name:    copy ALSA asoundrc
     action:  copy src=home/ubuntu/.asoundrc dest=/home/ubuntu/.asoundrc owner=ubuntu
   - name:   set up pulse client
