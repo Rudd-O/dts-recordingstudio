@@ -1,3 +1,4 @@
 #!/bin/bash
 
 exec /usr/local/bin/pawrapper mumble /usr/bin/mumble
+sudo chrt -a -f -p 65 `pgrep mumble`
