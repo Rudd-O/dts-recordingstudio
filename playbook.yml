@@ -56,6 +56,10 @@
     action:  copy src=home/ubuntu/default.pa.template dest=/home/ubuntu/default.pa.template
   - name:    create PulseAudio wrapper script to launch apps
     action:  template src=usr/local/bin/pawrapper dest=/usr/local/bin/pawrapper mode=0755
+  - name:    create intro
+    action:  template src=usr/local/bin/intro dest=/usr/local/bin/intro mode=0755
+  - name:    create outro
+    action:  template src=usr/local/bin/outro dest=/usr/local/bin/outro mode=0755
   - name:    create Mumble wrapper
     action:  template src=usr/local/bin/mumble dest=/usr/local/bin/mumble mode=0755
   - name:    create Skype wrapper
