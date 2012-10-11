@@ -4,4 +4,4 @@ set -e
 
 source ansible/hacking/env-setup
 
-ansible-playbook -i ~/.studiohosts playbook.yml
+ansible-playbook -i ~/.studiohosts playbook.yml "$@"
