@@ -22,7 +22,7 @@ if PULSE_SERVER=/tmp/pulse-"$APPNAME".socket pactl list > /dev/null 2>&1 ; then
                 # because it is connected to jack
         else
                 # this server is borked. kill it and pretend it never started
-                pkill -9 -f "pulseaudio.*$temppa"`
+                pkill -9 -f "pulseaudio.*$temppa"
                 pulseaudio_running="no"
         fi
 else
