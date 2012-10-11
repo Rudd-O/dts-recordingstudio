@@ -8,16 +8,23 @@ fi
 APPNAME=$1
 shift
 
-exec &>> $HOME/.studio-errors
-set -x
 set -e
 
 ulimit -l unlimited
 ulimit -r 99
 unset pulseaudio_running
 
+temppa=/tmp/default.pa."$APPNAME" # this is the path to the config file
+
 if PULSE_SERVER=/tmp/pulse-"$APPNAME".socket pactl list > /dev/null 2>&1 ; then
-        true
+        if PULSE_SERVER=/tmp/pulse-"$APPNAME".socket pactl list | grep -q jack-sink ; then
+                true # the server is in good working condition
+                # because it is connected to jack
+        else
+                # this server is borked. kill it and pretend it never started
+                pkill -9 -f "pulseaudio.*$temppa"`
+                pulseaudio_running="no"
+        fi
 else
 	pulseaudio_running="no"
 fi
@@ -27,7 +34,6 @@ if [ "$pulseaudio_running" == "no" ] ; then
 	eval `dbus-launch`
 	export DBUS_SESSION_BUS_ADDRESS
 	sleep 0.25
-	temppa=/tmp/default.pa."$APPNAME"
 	sed "s/%APP%/$APPNAME/" < $HOME/default.pa.template > "$temppa"
 	pulseaudio -nF "$temppa" --realtime &
 	sleep 1
