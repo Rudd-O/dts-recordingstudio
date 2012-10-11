@@ -10,14 +10,8 @@
   <socket exclusive="off" client="aux_out" type="jack-audio" name="Aux playback">
    <plug>mono</plug>
   </socket>
-  <socket exclusive="off" client="alsa-jack\.pcm\.jack_auxP\.[0-9]+\.0" type="jack-audio" name="Aux ALSA playback">
-   <plug>out_000</plug>
-  </socket>
   <socket exclusive="off" client="aux_live_out" type="jack-audio" name="Live-only playback">
    <plug>mono</plug>
-  </socket>
-  <socket exclusive="off" client="alsa-jack\.pcm\.jack_aux_liveP\.[0-9]+\.0" type="jack-audio" name="Live-only ALSA playback">
-   <plug>out_000</plug>
   </socket>
   <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer premastered out">
    <plug>premastered L</plug>
@@ -66,20 +60,18 @@
  </input-sockets>
  <slots/>
  <cables>
-  <cable output="Skype playback" input="Mixer Skype in" type="jack-audio"/>
-  <cable output="Live-only playback" input="Mixer live-only in" type="jack-audio"/>
   <cable output="Mumble playback" input="Mixer Mumble in" type="jack-audio"/>
-  <cable output="Live-only ALSA playback" input="Mixer live-only in" type="jack-audio"/>
-  <cable output="Mixer Skype out" input="Mumble capture" type="jack-audio"/>
-  <cable output="Mixer Mumble out" input="Skype capture" type="jack-audio"/>
-  <cable output="Mixer aux out" input="Skype capture" type="jack-audio"/>
-  <cable output="Mixer aux out" input="Mumble capture" type="jack-audio"/>
+  <cable output="Skype playback" input="Mixer Skype in" type="jack-audio"/>
   <cable output="Aux playback" input="Mixer aux in" type="jack-audio"/>
-  <cable output="Aux ALSA playback" input="Mixer aux in" type="jack-audio"/>
-  <cable output="Mixer live-only out" input="Skype capture" type="jack-audio"/>
-  <cable output="Mixer live-only out" input="Mumble capture" type="jack-audio"/>
+  <cable output="Live-only playback" input="Mixer live-only in" type="jack-audio"/>
   <cable output="Mixer premastered out" input="Premastered recording" type="jack-audio"/>
   <cable output="Mixer live out" input="Live broadcast" type="jack-audio"/>
+  <cable output="Mixer Mumble out" input="Skype capture" type="jack-audio"/>
+  <cable output="Mixer Skype out" input="Mumble capture" type="jack-audio"/>
+  <cable output="Mixer aux out" input="Skype capture" type="jack-audio"/>
+  <cable output="Mixer aux out" input="Mumble capture" type="jack-audio"/>
+  <cable output="Mixer live-only out" input="Skype capture" type="jack-audio"/>
+  <cable output="Mixer live-only out" input="Mumble capture" type="jack-audio"/>
  </cables>
 </patchbay>
 
