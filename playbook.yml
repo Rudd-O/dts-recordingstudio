@@ -54,6 +54,8 @@
     only_if: "is_set('${changepassword}')"
   - name:    copy pulseaudio default script template
     action:  copy src=home/ubuntu/default.pa.template dest=/home/ubuntu/default.pa.template
+  - name:    create realtimelist script
+    action:  copy src=usr/local/bin/realtimelist dest=/usr/local/bin/realtimelist mode=0755
   - name:    create PulseAudio wrapper script to launch apps
     action:  template src=usr/local/bin/pawrapper dest=/usr/local/bin/pawrapper mode=0755
   - name:    create intro
@@ -68,10 +70,14 @@
     action:  copy src=usr/local/bin/startjack dest=/usr/local/bin/startjack mode=0755
   - name:    create startapps script
     action:  copy src=usr/local/bin/startapps dest=/usr/local/bin/startapps mode=0755
+  - name:    create recordbroadcast script
+    action:  copy src=usr/local/bin/recordbroadcast dest=/usr/local/bin/recordbroadcast mode=0755
   - name:    create startjack autostart file
     action:  copy src=etc/xdg/autostart/startjack.desktop dest=/etc/xdg/autostart/startjack.desktop
   - name:    create startapps autostart file
     action:  copy src=etc/xdg/autostart/startapps.desktop dest=/etc/xdg/autostart/startapps.desktop
+  - name:    create recordbroadcast autostart file
+    action:  copy src=etc/xdg/autostart/recordbroadcast.desktop dest=/etc/xdg/autostart/recordbroadcast.desktop
   - name:    create Xvnc script to launch Xvnc properly with password authentication
     action:  template src=usr/local/bin/Xvnc dest=/usr/local/bin/Xvnc mode=0755
   - name:    set up LightDM for VNC access
