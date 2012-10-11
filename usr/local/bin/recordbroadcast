@@ -1,0 +1,53 @@
+#!/bin/bash
+
+exec &>> $HOME/Studio/Logs/recordbroadcast-errors
+set -x
+set -e
+ulimit -l unlimited
+
+while ! pgrep jackd ; do
+        echo waiting for jackd >> /dev/stderr
+        sleep 1
+done
+
+while ! pgrep qjackctl ; do
+        echo waiting for QjackCtl >> /dev/stderr
+        sleep 1
+done
+
+pkill -INT gst-launch || true
+sleep 2
+
+recordingdir=$HOME/Studio/Recordings
+# this scripts expects it to exist and be writable
+
+cd $recordingdir
+gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
+   ! 'audio/x-raw-float,channels=1' \
+   ! queue \
+   ! tee name=formattee \
+     formattee. \
+     ! queue \
+     ! audioconvert \
+     ! lamemp3enc mono=true quality=2 cbr=true bitrate=64 target=bitrate \
+     ! shout2send mount=/declinetostate.mp3 ip=radio.rudd-o.com password=klwelkdf785djd2 port=8001 url=http://declinefm.com/live streamname="The Decline to State live show" description="The show in which we get together to discuss the ins-and-outs of life outside the Matrix" \
+     formattee. \
+     ! queue \
+     ! audioconvert \
+     ! vorbisenc max-bitrate=64000 min-bitrate=64000 \
+     ! oggmux \
+     ! shout2send mount=/declinetostate.ogg ip=radio.rudd-o.com password=klwelkdf785djd2 port=8001 url=http://declinefm.com/live streamname="The Decline to State live show" description="The show in which we get together to discuss the ins-and-outs of life outside the Matrix" \
+&
+gst-launch -e jackaudiosrc name=premastered client-name=premastered \
+   ! 'audio/x-raw-float,channels=1' \
+   ! audioconvert \
+   ! queue \
+   ! vorbisenc quality=0.9 \
+   ! oggmux \
+   ! queue \
+   ! filesink append=true location=declinetostate.ogg \
+&
+sleep 1
+for a in `pgrep gst-launch` ; do
+sudo chrt -a -f -p 66 $a
+done

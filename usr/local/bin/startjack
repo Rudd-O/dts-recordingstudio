@@ -1,6 +1,6 @@
 #!/bin/bash
 
-exec &>> $HOME/.studio-errors
+exec &>> $HOME/Studio/Logs/jack-errors
 set -x
 set -e
 ulimit -l unlimited

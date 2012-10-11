@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ps -eo pid,class,pri,rtprio,user,args --sort -priority | grep -v '\[' | tail -20
