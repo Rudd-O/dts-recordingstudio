@@ -40,6 +40,12 @@ After that, copy your show intro to `/home/ubuntu/Studio/Clips/Intro.wav`
 `/home/ubuntu/Studio/Clips/Outro.wav`.  This completes the setup of the
 media necessary to run the live show's intro and outro commands.
 
+Then you need to set up the record and broadcast facilities.  In a terminal,
+run command `recordbroadcast` and answer the question related to your Icecast
+server that you will be asked.  After running the command, you can start the
+command `recordbroadcast`, which will promptly start broadcasting your show
+to the icecast server, and recording it into `/home/ubuntu/Studio/Recordings`.
+
 #Testing the instance
 
 There are a number of things you need to test.

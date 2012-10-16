@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+
+import os
+import shlex
+
+# -------------------
+
+def stripenters(string):
+	while string[-1] == "\n": string = string[:-1]
+	return string
+
+def quote(string): return "\\'".join("'" + p + "'" for p in string.split("'"))
+
+# -------------------
+
+configuration_options = (
+  ("IP","IP address of the Icecast server"),
+  ("PORT","port where the Icecast server is listening"),
+  ("SHOW_NAME","name of your radio show"),
+  ("SHOW_DESCRIPTION","description of your radio show"),
+  ("SHOW_URL","URL pointing to your radio show's Web page"),
+  ("MP3_MOUNT","path of the radio show's MP3 mount"),
+  ("OGG_MOUNT","path of the radio show's Ogg Vorbis mount"),
+  ("ICECAST_PASSWORD","password for the Icecast mounts where the show will be published"),
+)
+
+configuration_defaults = {
+  "IP":"radio.show.com",
+  "PORT":"8080",
+  "SHOW_NAME":"Radio Show",
+  "SHOW_DESCRIPTION":"This is the radio show",
+  "SHOW_URL":"http://radio.show.com/",
+  "MP3_MOUNT":"/radioshow.mp3",
+  "OGG_MOUNT":"/radioshow.ogg",
+  "ICECAST_PASSWORD":"",
+}
+
+configuration_file = os.path.expanduser("~/.recordbroadcast")
+
+try: config_data = file(configuration_file).readlines()
+except (IOError, OSError): config_data = []
+config_data = [ stripenters(l) for l in config_data ]
+
+# map of key to config value -- we initialize with defaults
+configuration_values = dict(configuration_defaults)
+# map of key to line number - it's empty at the beginning
+configuration_lines = {}
+for i,line in enumerate(config_data):
+	try: key,value = line.split("=",1)
+	except ValueError: continue
+	if key not in dict(configuration_options): continue
+	try: value = shlex.split(value)[0]
+	except IndexError: value = ""
+	configuration_values[key] = value
+	configuration_lines[key] = i
+
+for k,d in configuration_options:
+	v = configuration_values[k]
+	v = raw_input("Enter %s\n(Hit ENTER to keep default: %s) > "%(d,v))
+	if v: configuration_values[k] = v
+
+for k,v in configuration_values.items():
+	new_config_line = "%s=%s"%(k,quote(v))
+	if k in configuration_lines:
+		l = configuration_lines[k]
+		config_data[l] = new_config_line
+	else:
+		config_data.append(new_config_line)
+
+f = file(configuration_file,"w")
+f.write("\n".join(config_data))
+f.flush()
+f.close()

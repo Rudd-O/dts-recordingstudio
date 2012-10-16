@@ -74,6 +74,8 @@
     action:  copy src=usr/local/bin/startapps dest=/usr/local/bin/startapps mode=0755
   - name:    create recordbroadcast script
     action:  copy src=usr/local/bin/recordbroadcast dest=/usr/local/bin/recordbroadcast mode=0755
+  - name:    create setup-recordbroadcast script
+    action:  copy src=usr/local/bin/setup-recordbroadcast dest=/usr/local/bin/setup-recordbroadcast mode=0755
   - name:    create startjack autostart file
     action:  copy src=etc/xdg/autostart/startjack.desktop dest=/etc/xdg/autostart/startjack.desktop
   - name:    create startapps autostart file

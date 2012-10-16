@@ -21,6 +21,8 @@ sleep 2
 recordingdir=$HOME/Studio/Recordings
 # this scripts expects it to exist and be writable
 
+source "$HOME"/.recordbroadcast || { notify-send -t 60 'Broadcast recording not configured' 'Configure broadcast recording by opening a terminal and running the command setup-recordbroadcast' ; exit 5 ; }
+
 cd $recordingdir
 gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
    ! 'audio/x-raw-float,channels=1' \
@@ -30,13 +32,13 @@ gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
      ! queue \
      ! audioconvert \
      ! lamemp3enc mono=true quality=2 cbr=true bitrate=64 target=bitrate \
-     ! shout2send mount=/declinetostate.mp3 ip=radio.rudd-o.com password=klwelkdf785djd2 port=8001 url=http://declinefm.com/live streamname="The Decline to State live show" description="The show in which we get together to discuss the ins-and-outs of life outside the Matrix" \
+     ! shout2send mount="$MP3_MOUNT" ip="$IP" password="$ICECAST_PASSWORD" port="$PORT" url="$SHOW_URL" streamname="$SHOW_NAME" description="$SHOW_DESCRIPTION" \
      formattee. \
      ! queue \
      ! audioconvert \
      ! vorbisenc max-bitrate=64000 min-bitrate=64000 \
      ! oggmux \
-     ! shout2send mount=/declinetostate.ogg ip=radio.rudd-o.com password=klwelkdf785djd2 port=8001 url=http://declinefm.com/live streamname="The Decline to State live show" description="The show in which we get together to discuss the ins-and-outs of life outside the Matrix" \
+     ! shout2send mount="$OGG_MOUNT" ip="$IP" password="$ICECAST_PASSWORD" port="$PORT" url="$SHOW_URL" streamname="$SHOW_NAME" description="$SHOW_DESCRIPTION" \
 &
 gst-launch -e jackaudiosrc name=premastered client-name=premastered \
    ! 'audio/x-raw-float,channels=1' \
