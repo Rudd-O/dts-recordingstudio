@@ -11,6 +11,11 @@ configure it fully into an Internet radio recording studio:
 * using VNC to allow the studio techs and hosts to handle the show,
 * in a matter of minutes.
 
+We the peeps at [Decline to State](http://declinefm.com) use it to record our
+radio show every Wednesday, and it works wonders.  We decided to release it
+as open source software (under the AGPLv3) because this is software that can
+power many Internet radio stations run by people across the globe.
+
 #Setting up the software to run on your computer
 
 * install git on your computer
