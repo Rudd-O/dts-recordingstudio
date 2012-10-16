@@ -20,6 +20,7 @@
 
 * The first time (to set a password)
   * `./converge --extra-vars "changepassword=yournewpassword"`
+  * The password must be up to eight characters (VNC limitations).
 * From then on
   * `./converge`
 
