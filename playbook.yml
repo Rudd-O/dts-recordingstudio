@@ -29,6 +29,8 @@
     action: file path=/home/ubuntu/Studio state=directory owner=ubuntu
   - name:   create recordings directory
     action: file path=/home/ubuntu/Studio/Recordings state=directory owner=ubuntu
+  - name:   create clips directory
+    action: file path=/home/ubuntu/Studio/Clips state=directory owner=ubuntu
   - name:   create logs directory
     action: file path=/home/ubuntu/Studio/Logs state=directory owner=ubuntu
   - name:    copy patchbay file
