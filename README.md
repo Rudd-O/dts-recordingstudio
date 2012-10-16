@@ -1,4 +1,0 @@
-studio
-======
-
-Cloud-based studio
