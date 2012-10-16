@@ -77,5 +77,6 @@ There are a number of things you need to test.
 * Test that the audio is being recorded.
   * Download the file recorded in `/home/ubuntu/Studio/Recordings`.
 * Test that the audio is being broadcasted live.
-  * Listen to your radio station's Icecast URL.
+  * Look at your radio station's Icecast home page.
+  * Listen to the two mounts and verify that they are broadcasting.
 * Test that the audio clips played back by the `intro` and `outro` commands get played back through the live broadcast, but not on the recording.
