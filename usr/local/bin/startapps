@@ -1,0 +1,14 @@
+#!/bin/bash
+
+while ! pgrep jackd ; do
+        echo waiting for jackd >> /dev/stderr
+        sleep 1
+done
+
+while ! pgrep qjackctl ; do
+        echo waiting for QjackCtl >> /dev/stderr
+        sleep 1
+done
+
+/usr/local/bin/mumble &
+/usr/local/bin/skype  &

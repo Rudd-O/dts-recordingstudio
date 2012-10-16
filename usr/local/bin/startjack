@@ -1,0 +1,22 @@
+#!/bin/bash
+
+exec &>> $HOME/Studio/Logs/jack-errors
+set -x
+set -e
+ulimit -l unlimited
+
+killall -9 qjackctl.real jackd jackdbus || true
+pkill -9 -f jack_mixer || true
+
+sleep 0.25
+jackd -d dummy -r 48000 -C 1 -P 1 -p 2048 &
+
+sleep 0.25
+sudo chrt -a -f -p 70 `pidof jackd`
+
+sleep 1
+qjackctl -a $HOME/patchbay.xml -s &
+
+jack_mixer -c $HOME/jack_mixer.xml &
+sleep 0.25
+sudo chrt -a -f -p 69 `pgrep -f jack_mixer`

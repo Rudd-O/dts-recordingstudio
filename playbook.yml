@@ -1,0 +1,95 @@
+---
+- hosts: all
+  gather_facts: false
+  user:  ubuntu
+  sudo:  True
+  tasks:
+  - action: apt pkg=python-zmq,python-keyczar state=installed
+  - action: fireball
+
+
+- hosts: all
+  connection:  fireball
+  vars:
+     codename: ${ansible_lsb.codename}
+  tasks:
+  - name:   set hostname in configuration file
+    action: template src=etc/hostname.j2 dest=/etc/hostname
+    notify: set hostname in running system
+  - name:   store dpkg non-interactive selections
+    action: template src=etc/dpkg-selections dest=/etc/dpkg-selections
+    notify: set dpkg selections
+  - name:   add the partner repo to apt
+    action: apt_repository repo="deb http://archive.canonical.com/ $codename partner"
+    # FIXME: we need a reboot handler to handle this one if it changes anything and the change requires a reboot to be applied
+    # FIXME: reverse-engineer ubuntu's GUI restart notification when logging off
+  - name:   install necessary software
+    action: apt pkg=gstreamer0.10-pulseaudio,gstreamer0.10-plugins-ugly,gstreamer0.10-plugins-good,gstreamer0.10-plugins-bad,gstreamer0.10-nice,gstreamer0.10-fluendo-mp3,gstreamer0.10-tools,gstreamer-tools,libpulse0:i386,libasound2-plugins:i386,mumble,paman,pavucontrol,procps,curl,skype,mumble-server,qjackctl,jackd2,pulseaudio-module-jack,jamin,jack-mixer,vnc4server,debconf-utils,adobe-flashplugin,lightdm,unity-2d-shell,gnome-session,metacity,nautilus,unity-2d-panel,gedit,gnome-terminal,ubuntu-desktop state=present
+  - name:   create studio directory
+    action: file path=/home/ubuntu/Studio state=directory owner=ubuntu
+  - name:   create recordings directory
+    action: file path=/home/ubuntu/Studio/Recordings state=directory owner=ubuntu
+  - name:   create logs directory
+    action: file path=/home/ubuntu/Studio/Logs state=directory owner=ubuntu
+  - name:    copy patchbay file
+    action:  copy src=home/ubuntu/patchbay.xml dest=/home/ubuntu/patchbay.xml owner=ubuntu
+  - name:    copy jack mixer file
+    action:  copy src=home/ubuntu/jack_mixer.xml dest=/home/ubuntu/jack_mixer.xml owner=ubuntu
+  - name:    copy ALSA asoundrc
+    action:  copy src=home/ubuntu/.asoundrc dest=/home/ubuntu/.asoundrc owner=ubuntu
+  - name:   create config directory
+    action: file path=/home/ubuntu/.config state=directory owner=ubuntu
+  - name:   create QjackCtl config directory
+    action: file path=/home/ubuntu/.config/rncbc.org state=directory owner=ubuntu
+  - name:    copy QjackCtl configuration
+    action:  copy src=home/ubuntu/.config/rncbc.org/QjackCtl.conf dest=/home/ubuntu/.config/rncbc.org/QjackCtl.conf owner=ubuntu
+  - name:   set up pulse client
+    action: template src=etc/pulse/client.conf dest=/etc/pulse/client.conf
+  - name:   set up pulse daemon
+    action: template src=etc/pulse/daemon.conf dest=/etc/pulse/daemon.conf
+  - name:   relax security limits
+    action: template src=etc/security/limits.conf dest=/etc/security/limits.conf
+  - name:    create password reset script
+    action:  template src=usr/local/bin/resetpassword dest=/usr/local/bin/resetpassword mode=0700
+  - name:    change password (if requested)
+    action:  command /usr/local/bin/resetpassword ${changepassword}
+    only_if: "is_set('${changepassword}')"
+  - name:    copy pulseaudio default script template
+    action:  copy src=home/ubuntu/default.pa.template dest=/home/ubuntu/default.pa.template
+  - name:    create realtimelist script
+    action:  copy src=usr/local/bin/realtimelist dest=/usr/local/bin/realtimelist mode=0755
+  - name:    create PulseAudio wrapper script to launch apps
+    action:  template src=usr/local/bin/pawrapper dest=/usr/local/bin/pawrapper mode=0755
+  - name:    create intro
+    action:  template src=usr/local/bin/intro dest=/usr/local/bin/intro mode=0755
+  - name:    create outro
+    action:  template src=usr/local/bin/outro dest=/usr/local/bin/outro mode=0755
+  - name:    create Mumble wrapper
+    action:  template src=usr/local/bin/mumble dest=/usr/local/bin/mumble mode=0755
+  - name:    create Skype wrapper
+    action:  template src=usr/local/bin/skype dest=/usr/local/bin/skype mode=0755
+  - name:    create startjack script
+    action:  copy src=usr/local/bin/startjack dest=/usr/local/bin/startjack mode=0755
+  - name:    create startapps script
+    action:  copy src=usr/local/bin/startapps dest=/usr/local/bin/startapps mode=0755
+  - name:    create recordbroadcast script
+    action:  copy src=usr/local/bin/recordbroadcast dest=/usr/local/bin/recordbroadcast mode=0755
+  - name:    create startjack autostart file
+    action:  copy src=etc/xdg/autostart/startjack.desktop dest=/etc/xdg/autostart/startjack.desktop
+  - name:    create startapps autostart file
+    action:  copy src=etc/xdg/autostart/startapps.desktop dest=/etc/xdg/autostart/startapps.desktop
+  - name:    create recordbroadcast autostart file
+    action:  copy src=etc/xdg/autostart/recordbroadcast.desktop dest=/etc/xdg/autostart/recordbroadcast.desktop
+  - name:    create Xvnc script to launch Xvnc properly with password authentication
+    action:  template src=usr/local/bin/Xvnc dest=/usr/local/bin/Xvnc mode=0755
+  - name:    set up LightDM for VNC access
+    action:  template src=etc/lightdm/lightdm.conf dest=/etc/lightdm/lightdm.conf
+    notify:  restart lightdm
+  handlers:
+  - name:   set dpkg selections
+    action: command /usr/bin/debconf-set-selections /etc/dpkg-selections
+  - name:   set hostname in running system
+    action: command /bin/hostname $inventory_hostname
+  - name:   restart lightdm
+    action: service name=lightdm state=restarted enabled=yes
+  

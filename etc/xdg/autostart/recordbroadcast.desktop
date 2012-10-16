@@ -1,0 +1,20 @@
+[Desktop Entry]
+Comment[en_US]=
+Comment=
+Exec=/usr/local/bin/recordbroadcast
+GenericName[en_US]=Start recording and broadcasting
+GenericName=Start recording and broadcasting
+Icon=pavucontrol
+MimeType=
+Name[en_US]=Start recording and broadcasting
+Name=Start recording and broadcasting
+NoDisplay=false
+Path=
+StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

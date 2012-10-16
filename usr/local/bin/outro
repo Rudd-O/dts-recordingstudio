@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ulimit -l unlimited
+ulimit -r 99
+chrt -f 60 aplay -D pcm.aux_live $HOME/Music/Outro.wav

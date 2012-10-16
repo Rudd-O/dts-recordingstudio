@@ -1,0 +1,77 @@
+<!DOCTYPE patchbay>
+<patchbay version="0.3.8" name="patchbay">
+ <output-sockets>
+  <socket exclusive="off" client="mumble_out" type="jack-audio" name="Mumble playback">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="skype_out" type="jack-audio" name="Skype playback">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="aux_out" type="jack-audio" name="Aux playback">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="aux_live_out" type="jack-audio" name="Live-only playback">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer premastered out">
+   <plug>premastered L</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer live out">
+   <plug>live L</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer Mumble out">
+   <plug>mumble Out</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer Skype out">
+   <plug>skype Out</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer aux out">
+   <plug>aux Out</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer live-only out">
+   <plug>aux_live Out</plug>
+  </socket>
+ </output-sockets>
+ <input-sockets>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer Mumble in">
+   <plug>mumble</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer Skype in">
+   <plug>skype</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer aux in">
+   <plug>aux</plug>
+  </socket>
+  <socket exclusive="off" client="jack_mixer" type="jack-audio" name="Mixer live-only in">
+   <plug>aux_live</plug>
+  </socket>
+  <socket exclusive="off" client="premastered" type="jack-audio" name="Premastered recording">
+   <plug>in_premastered_1</plug>
+  </socket>
+  <socket exclusive="off" client="live" type="jack-audio" name="Live broadcast">
+   <plug>in_live_1</plug>
+  </socket>
+  <socket exclusive="off" client="mumble_in" type="jack-audio" name="Mumble capture">
+   <plug>mono</plug>
+  </socket>
+  <socket exclusive="off" client="skype_in" type="jack-audio" name="Skype capture">
+   <plug>mono</plug>
+  </socket>
+ </input-sockets>
+ <slots/>
+ <cables>
+  <cable output="Mumble playback" input="Mixer Mumble in" type="jack-audio"/>
+  <cable output="Skype playback" input="Mixer Skype in" type="jack-audio"/>
+  <cable output="Aux playback" input="Mixer aux in" type="jack-audio"/>
+  <cable output="Live-only playback" input="Mixer live-only in" type="jack-audio"/>
+  <cable output="Mixer premastered out" input="Premastered recording" type="jack-audio"/>
+  <cable output="Mixer live out" input="Live broadcast" type="jack-audio"/>
+  <cable output="Mixer Mumble out" input="Skype capture" type="jack-audio"/>
+  <cable output="Mixer Skype out" input="Mumble capture" type="jack-audio"/>
+  <cable output="Mixer aux out" input="Skype capture" type="jack-audio"/>
+  <cable output="Mixer aux out" input="Mumble capture" type="jack-audio"/>
+  <cable output="Mixer live-only out" input="Skype capture" type="jack-audio"/>
+  <cable output="Mixer live-only out" input="Mumble capture" type="jack-audio"/>
+ </cables>
+</patchbay>
+

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+exec /usr/local/bin/pawrapper skype /usr/bin/skype
+sudo chrt -a -f -p 64 `pgrep skype`
