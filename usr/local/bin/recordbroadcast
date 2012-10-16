@@ -18,12 +18,16 @@ done
 pkill -INT gst-launch || true
 sleep 2
 
+# this script expects this directory to exist and be writable
 recordingdir=$HOME/Studio/Recordings
-# this scripts expects it to exist and be writable
+# this script will create this file inside the recording dir
+filename=`date +"Recording %Y-%m-%d %H:%M:%S.ogg"`
 
-source "$HOME"/.recordbroadcast || { notify-send -t 60 'Broadcast recording not configured' 'Configure broadcast recording by opening a terminal and running the command setup-recordbroadcast' ; exit 5 ; }
+BROADCAST=YES
+source "$HOME"/.recordbroadcast || { notify-send -t 60 'Broadcast recording not configured' 'Configure broadcast recording by opening a terminal and running the command setup-recordbroadcast.  Audio will only be recorded, but not broadcast, until you go through this setup.' ; BROADCAST=NO ; }
 
 cd $recordingdir
+if [ "$BROADCAST" == "YES" ] ; then
 gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
    ! 'audio/x-raw-float,channels=1' \
    ! queue \
@@ -40,12 +44,14 @@ gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
      ! oggmux \
      ! shout2send mount="$OGG_MOUNT" ip="$IP" password="$ICECAST_PASSWORD" port="$PORT" url="$SHOW_URL" streamname="$SHOW_NAME" description="$SHOW_DESCRIPTION" \
 &
+fi
+
 gst-launch -e jackaudiosrc name=premastered client-name=premastered \
    ! 'audio/x-raw-float,channels=1' \
    ! vorbisenc quality=0.9 \
    ! oggmux \
    ! queue \
-   ! filesink append=true location=declinetostate.ogg \
+   ! filesink append=true location="$filename" \
 &
 sleep 1
 for a in `pgrep gst-launch` ; do
