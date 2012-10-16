@@ -53,8 +53,14 @@ the host name of your studio instance.
 
 After configuring the instance for the first time, you need to set up Mumble
 and Skype in it.  They should launch automatically.  Set them up to your
-liking and then exit the applications so they get a chance to save their
-configuration to disk.
+liking, and then pay attention to these important audio-related points:
+
+- Both Skype and Mumble need to be configured to record and play through PulseAudio.
+- Skype's automatic gain control (adjust input / microphone levels automatically) needs to be off.
+- Mumble's audio output should be Continuous, Echo cancellation must be off, Positional audio must be off, and Amplification must be at 1.
+- You may want to turn any sound effects or text-to-speech in both Mumble and Skype.
+
+Then exit the applications so they get a chance to save their configuration to disk.
 
 After that, copy your show intro to `/home/ubuntu/Studio/Clips/Intro.wav`
 (must be 48 KHz mono) and then copy your show outro to
