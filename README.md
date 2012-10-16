@@ -51,7 +51,9 @@ the host name of your studio instance.
 #Configuring media and applications
 
 After configuring the instance for the first time, you need to set up Mumble
-and Skype in it.  They should launch automatically.
+and Skype in it.  They should launch automatically.  Set them up to your
+liking and then exit the applications so they get a chance to save their
+configuration to disk.
 
 After that, copy your show intro to `/home/ubuntu/Studio/Clips/Intro.wav`
 (must be 48 KHz mono) and then copy your show outro to
@@ -59,10 +61,21 @@ After that, copy your show intro to `/home/ubuntu/Studio/Clips/Intro.wav`
 media necessary to run the live show's intro and outro commands.
 
 Then you need to set up the record and broadcast facilities.  In a terminal,
-run command `recordbroadcast` and answer the question related to your Icecast
-server that you will be asked.  After running the command, you can start the
-command `recordbroadcast`, which will promptly start broadcasting your show
-to the icecast server, and recording it into `/home/ubuntu/Studio/Recordings`.
+run command `recordbroadcast` and answer the questions related to your Icecast
+server that you will be asked.
+
+After you're done with these steps, either reboot or log out and log back in
+to the EC2 instance (it is normal to get your VNC session disconnected when
+you log off -- just connect right back and you should be able to log in).  
+
+Once you log back in, you should be able to see the JACK suite of applications,
+mixer, Mumble and Skype already running.  In addition to that, the recording
+and broadcast will be automatically started in the background.  will promptly broadcast your show to your Icecast server, and record it into
+`/home/ubuntu/Studio/Recordings` as an Ogg Vorbis high-quality floating-point
+48 KHz audio file.
+
+You only need to perform this configuration once (or when circumstances
+demand that you update the configuration).
 
 #Testing the instance
 
