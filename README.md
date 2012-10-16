@@ -2,7 +2,8 @@
 
 The Studio is an Ansible playbook and collection of related software that will
 launch an EBS-backed Amazon EC2 instance with Ubuntu 12.04 on it, then
-configure it fully into an Internet radio recording studio:
+configure it fully into an Internet radio recording studio that can also be
+used to record high-quality podcasts:
 
 * using JACK Audio Connection Kit as a low-latency audio bus,
 * using Mumble (routed through PulseAudio) as the studio set where radio hosts can talk,
