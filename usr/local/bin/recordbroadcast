@@ -40,8 +40,6 @@ gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
 &
 gst-launch -e jackaudiosrc name=premastered client-name=premastered \
    ! 'audio/x-raw-float,channels=1' \
-   ! audioconvert \
-   ! queue \
    ! vorbisenc quality=0.9 \
    ! oggmux \
    ! queue \
