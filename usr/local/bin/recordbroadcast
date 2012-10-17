@@ -4,6 +4,7 @@ exec &>> $HOME/Studio/Logs/recordbroadcast-errors
 set -x
 set -e
 ulimit -l unlimited
+ulimit -r 99
 
 while ! pgrep jackd ; do
         echo waiting for jackd >> /dev/stderr
