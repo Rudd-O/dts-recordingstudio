@@ -27,7 +27,6 @@ filename=`date +"Recording %Y-%m-%d %H:%M:%S.ogg"`
 BROADCAST=YES
 source "$HOME"/.recordbroadcast || { notify-send -t 60 'Broadcast recording not configured' 'Configure broadcast recording by opening a terminal and running the command setup-recordbroadcast.  Audio will only be recorded, but not broadcast, until you go through this setup.' ; BROADCAST=NO ; }
 
-cd $recordingdir
 if [ "$BROADCAST" == "YES" ] ; then
 gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
    ! 'audio/x-raw-float,channels=1' \
@@ -47,6 +46,7 @@ gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
 &
 fi
 
+cd $recordingdir
 gst-launch -e jackaudiosrc name=premastered client-name=premastered \
    ! 'audio/x-raw-float,channels=1' \
    ! vorbisenc quality=0.9 \
