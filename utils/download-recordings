@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+[ -n "$STUDIOARCHIVEDIR" ]   || export STUDIOARCHIVEDIR=~/Documents/Studio\ archive
+mkdir -p "$STUDIOARCHIVEDIR"
+
+host=`head -1 ~/.studiohosts` || {
+   echo '$0: could not determine studio host.  have you launched the studio yet?' 1>&2
+   exit 5
+}
+
+rsync -a --progress "$host":Studio/Recordings/ "$STUDIOARCHIVEDIR"/Recordings/
