@@ -1,0 +1,8 @@
+make it so any audio app not pawrapped automatically pipes to aux pulseaudio server.
+
+make it so skype and mumble, when started from the menu, are started with the pawrapper functionality to their proper wrappers.
+that may be doable by munging the environment variables like PATH and shit like that
+it's worth remembering, though, that pawrapper won't work until jack is up, and that just starting the apps with the environment variables in question but without pulseaudio running, will again just cause them to fail to connect to the pulseaudio server
+tricky problem to solve
+
+maybe we can research the stages at which the stuff should be started, in the xdg startup files
