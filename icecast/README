@@ -1,0 +1,11 @@
+Silence needs to be played in the destination icecast server, so that
+machines listening to your show don't just give up on playback when
+attempting to access the stream while nothing's playing, or fail to
+play if the show broadcast needs to be restarted.
+
+This silence needs to be piped into an icecast overlay stream.  This
+direc tory contains the necessary Upstart configuration files and
+shell scripts that will pipe the silence into the icecast server, as
+well as an icecast configuration file that can be used as an example.
+
+Enjoy!

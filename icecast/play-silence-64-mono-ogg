@@ -1,0 +1,14 @@
+#!/bin/bash
+
+gst-launch -e audiotestsrc volume=0 \
+    ! 'audio/x-raw-float,channels=1,rate=48000' \
+    ! vorbisenc min-bitrate=64000 max-bitrate=64000 \
+    ! oggmux \
+    ! shout2send mount=/silence-64-mono.ogg \
+                 ip=radio.rudd-o.com \
+                 password=source-password \
+                 port=8001 \
+                 url=http://declinefm.com/live \
+                 streamname="The Decline to State preroll" \
+                 description="The show is about to start / restart"
+retval=$? ; sleep 2 ; exit $retval

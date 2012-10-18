@@ -1,0 +1,100 @@
+<icecast>
+
+    <limits>
+        <clients>1000</clients>
+        <sources>4</sources>
+        <threadpool>5</threadpool>
+        <queue-size>524288</queue-size>
+        <client-timeout>30</client-timeout>
+        <header-timeout>15</header-timeout>
+        <source-timeout>10</source-timeout>
+        <!-- same as burst-on-connect, but this allows for being more
+             specific on how much to burst. Most people won't need to
+             change from the default 64k. Applies to all mountpoints  -->
+        <burst-size>65535</burst-size>
+    </limits>
+
+    <authentication>
+        <!-- Sources log in with username 'source' -->
+        <source-password>sourcepassword</source-password>
+        <!-- Relays log in username 'relay' -->
+        <relay-password>relay-password</relay-password>
+
+        <!-- Admin logs in with the username given below -->
+        <admin-user>rudd-o</admin-user>
+        <admin-password>admin-password</admin-password>
+    </authentication>
+
+    <hostname>radio.rudd-o.com</hostname>
+
+    <listen-socket>
+        <port>8001</port>
+        <!-- <bind-address>127.0.0.1</bind-address> -->
+    </listen-socket>
+
+    <!--
+    <relay>
+        <server>rudd-o.kicks-ass.org</server>
+        <port>8000</port>
+        <mount>/mpd.ogg</mount>
+        <local-mount>/mpd.ogg</local-mount>
+        <on-demand>1</on-demand>
+
+        <relay-shoutcast-metadata>1</relay-shoutcast-metadata>
+    </relay>
+    -->
+
+    <fileserve>1</fileserve>
+
+    <paths>
+        <basedir>/usr/share/icecast</basedir>
+        <logdir>/var/log/icecast</logdir>
+        <webroot>/usr/share/icecast/web</webroot>
+        <adminroot>/usr/share/icecast/admin</adminroot>
+        <pidfile>/var/run/icecast/icecast.pid</pidfile>
+
+        <!-- Aliases: treat requests for 'source' path as being for 'dest' path
+             May be made specific to a port or bound address using the "port"
+             and "bind-address" attributes.
+          -->
+        <alias source="/" dest="/status.xsl"/>
+    </paths>
+
+    <logging>
+        <accesslog>access.log</accesslog>
+        <errorlog>error.log</errorlog>
+        <playlistlog>playlist.log</playlistlog>
+      	<loglevel>3</loglevel> <!-- 4 Debug, 3 Info, 2 Warn, 1 Error -->
+    </logging>
+
+    <security>
+        <chroot>0</chroot>
+        <changeowner>
+            <user>icecast</user>
+            <group>icecast</group>
+        </changeowner>
+    </security>
+
+    <mount>
+       <mount-name>/declinetostate.mp3</mount-name>
+       <fallback-mount>/silence-64-mono.mp3</fallback-mount>
+       <fallback-override>1</fallback-override>
+    </mount>
+
+    <mount>
+       <mount-name>/declinetostate.ogg</mount-name>
+       <fallback-mount>/silence-64-mono.ogg</fallback-mount>
+       <fallback-override>1</fallback-override>
+    </mount>
+
+    <mount>
+       <mount-name>/silence-64-mono.mp3</mount-name>
+       <hidden>1</hidden>
+    </mount>
+
+    <mount>
+       <mount-name>/silence-64-mono.ogg</mount-name>
+       <hidden>1</hidden>
+    </mount>
+
+</icecast>
