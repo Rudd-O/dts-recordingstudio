@@ -8,3 +8,7 @@ tricky problem to solve
 maybe we can research the stages at which the stuff should be started, in the xdg startup files
 
 activate and use local murmur server, with proper process priorities
+
+find a way to run the silence scripts without the password showing on the command line (process list)
+or altogether getting rid of them.  perhaps this involves getting rid of the horrible horrible
+icecast.
