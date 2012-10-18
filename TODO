@@ -6,3 +6,5 @@ it's worth remembering, though, that pawrapper won't work until jack is up, and 
 tricky problem to solve
 
 maybe we can research the stages at which the stuff should be started, in the xdg startup files
+
+activate and use local murmur server, with proper process priorities
