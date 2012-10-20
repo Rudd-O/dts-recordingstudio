@@ -2,7 +2,7 @@
 
 The Studio is an Ansible playbook and collection of related software that will
 launch an EBS-backed Amazon EC2 instance with Ubuntu 12.04 on it, then
-configure it fully into an Internet radio recording studio that can also be
+configure it fully into an Internet radio broadcasting studio that can also be
 used to record high-quality podcasts:
 
 * using JACK Audio Connection Kit as a low-latency audio bus,
@@ -57,8 +57,12 @@ liking, and then pay attention to these important audio-related points:
 
 - Both Skype and Mumble need to be configured to record and play through PulseAudio.
 - Skype's automatic gain control (adjust input / microphone levels automatically) needs to be off.
-- Mumble's audio output should be Continuous, Echo cancellation must be off, Positional audio must be off, and Amplification must be at 1.
-- You may want to turn any sound effects or text-to-speech in both Mumble and Skype.
+- Mumble settings:
+  - audio output should be set to Continuous,
+  - Echo cancellation must be off,
+  - Positional audio must be off, and
+  - Amplification must be at 1.
+- You may want to turn any sound effects and text-to-speech in both Mumble and Skype, so they don't interrupt you during the show.
 
 Then exit the applications so they get a chance to save their configuration to disk.
 
@@ -75,28 +79,76 @@ After you're done with these steps, either reboot or log out and log back in
 to the EC2 instance (it is normal to get your VNC session disconnected when
 you log off -- just connect right back and you should be able to log in).  
 
-Once you log back in, you should be able to see the JACK suite of applications,
-mixer, Mumble and Skype already running.  In addition to that, the recording
-and broadcast will be automatically started in the background.  will promptly broadcast your show to your Icecast server, and record it into
-`/home/ubuntu/Studio/Recordings` as an Ogg Vorbis high-quality floating-point
-48 KHz audio file.
-
 You only need to perform this configuration once (or when circumstances
 demand that you update the configuration).
 
-#Testing the instance
+#Using the studio
 
-There are a number of things you need to test.
+Once you log back in from your first reboot, you should be able to see the
+JACK suite of applications, mixer, Mumble and Skype already running. Audio
+coming from Mumble will be relayed to Skype, and vice versa, so people
+calling in from Skype will be able to talk with Mumble channel participants.
 
-* Test that the audio from Mumble participants is recorded.
-  * Check the mixer window.
-* Test that the audio from Skype callers is recorded.
-  * Check the mixer window.
+In addition to that, the recording and broadcast will be automatically
+started in the background.  This will promptly broadcast your show to your
+Icecast server, and record it into `/home/ubuntu/Studio/Recordings` as an
+Ogg Vorbis high-quality floating-point 48 KHz audio file.
+
+Finally, the `intro` and `outro` commands (which you can run on the terminal)
+will play back on the live stream and into the Mumble and Skype audio inputs,
+but not on the recorded show.
+
+#Checklist for testing the studio functionality
+
+There are a number of things you need to test before you can trust that the
+studio will run without any technical issues.
+
+Application test:
+
+* Test that Mumble is:
+  * started,
+  * running,
+  * connected to the right server,
+  * joined in the right channel,
+  * and broadcasting (the mouth icon is red rather than grey)
+* Test that Skype is:
+  * started,
+  * connected,
+  * logged in,
+  * available
+* Check the process list to see if two `gst-launch` processes are running:
+  * one for the recording,
+  * one for the broadcast;
+  * if one is missing, try running `recordbroadcast` on the terminal and check again;
+  * if one is still missing, check the credentials you supplied to the `setup-recordbroadcast` command; they are stored in the hidden file `/home/ubuntu/.recordbroadcast`.
+
+Functionality test:
+
+* Test that the audio from Mumble participants is going through the mixer.
+  * Check the mixer window.  The Mumble in should move when people in the Mumble channel talk.
+* Test that the `intro` and `outro` clips play back into the Mumble channel.
+* Test that the audio from Skype callers is going through the mixer.
+  * Check the mixer window.  The Skype in should move when you make a call and the other person speaks.
 * Test that audio goes back and forth between Mumble and Skype.
   * Skype echo / call testing service usually does the job.
+  * If Mumble participants can hear the Skype voice, and vice versa, it's all good.
+* Test that the voice of everyone who is going to be in the show, actually echoes back from the Skype echo / call testing service.
+  * Mumble is a bit buggy -- it will silence some people even though they do not show up as silenced.  If someone isn't being heard back on the echo / call testing service, chances are they need to be unmuted, un-server-muted or unsuppressed.
 * Test that the audio is being recorded.
-  * Download the file recorded in `/home/ubuntu/Studio/Recordings`.
+  * Download the latest file recorded in `/home/ubuntu/Studio/Recordings`.  You can download the audio file by using an SFTP client (which needs to have the private SSH key)
+  * Open the downloaded file in an audio playback program.
+  * Test that the expected audio is there.
+  * Test that the `intro` and `outro` clips are not on the recording.
 * Test that the audio is being broadcasted live.
   * Look at your radio station's Icecast home page.
   * Listen to the two mounts and verify that they are broadcasting.
-* Test that the audio clips played back by the `intro` and `outro` commands get played back through the live broadcast, but not on the recording.
+  * Check that the `intro` and `outro` clips are played back here.
+
+Quality test:
+
+* Test that everyone coming in through Mumble have good sound quality.
+  * You should not see the mixer column for Mumble light red and go above 0.0 dB.  This indicates that the mixer level for Mumble is too high, and needs to be reduced.  You can clear the clipping indicator on the mixer by clicking on it.
+  * You should not hear people clipping (sounds like a horrible buzz) when they talk loudly.  This indicates that they have their microphone recording level too high, or they are speaking too close to the microphone.  Take corrective measures
+* Test that callers coming in through Skype have good sound quality.
+  * You should not see the mixer column for Skype light red and go above 0.0 dB.  This indicates that the mixer level for Skype needs to be reduced.  A good level to prevent clipping usually is around -6.1 dB.
+  * You should not hear callers clipping either.  This indicates that they're speaking too close to their microphone, or that their recording level on their computer / phone is too high.  Take corrective measures.
