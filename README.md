@@ -98,6 +98,13 @@ Finally, the `intro` and `outro` commands (which you can run on the terminal)
 will play back on the live stream and into the Mumble and Skype audio inputs,
 but not on the recorded show.
 
+To stop recording and broadcast, run the command `pkill -INT gst-launch`.  It
+is advisable to stop the recording and broadcast before downloading the file.
+
+To start the recording and broadcast once again, run the command
+`recordbroadcast`.  This starts the gst-launch GStreamer processes that
+broadcast and record locally.
+
 #Checklist for testing the studio functionality
 
 There are a number of things you need to test before you can trust that the
