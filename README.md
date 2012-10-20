@@ -32,6 +32,7 @@ power many Internet radio stations run by people across the globe.
 * change the settings section in the launch script
   * the correct elastic IP needs to be there
   * the correct hostname needs to be there, and resolving to the IP
+  * put the public SSH key that you want to use to access the server
 * change the hosts file to point to the elastic IP address of the studio
   * originally it says studio.declinefm.com
 
@@ -104,6 +105,15 @@ is advisable to stop the recording and broadcast before downloading the file.
 To start the recording and broadcast once again, run the command
 `recordbroadcast`.  This starts the gst-launch GStreamer processes that
 broadcast and record locally.
+
+To download the recordings, retrieve the files in
+`/home/ubuntu/Studio/Recordings` by copying them to your computer with an SFTP
+client or the command `utils/download-recordings` (which uses rsync to do its
+job).  In either of those cases, your SFTP client or SSH configuration must
+have the private SSH key that corresponds to the public SSH key that you used
+when launching the studio for the first time.  Alternatively, you could generate
+a new key pair and then deploy the public key to the `ubuntu` user's SSH
+`/home/ubuntu/.ssh/authorized_keys` file in the studio.
 
 #Checklist for testing the studio functionality
 
