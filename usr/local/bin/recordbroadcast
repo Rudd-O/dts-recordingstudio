@@ -16,8 +16,12 @@ while ! pgrep qjackctl ; do
         sleep 1
 done
 
-pkill -INT gst-launch || true
-sleep 2
+pgrep gst-launch || {
+   echo "No gst-launch processes, waiting ten seconds to start them" >> /dev/stderr
+   sleep 10
+}
+
+pkill -INT gst-launch && sleep 2 || true
 
 # this script expects this directory to exist and be writable
 recordingdir=$HOME/Studio/Recordings
