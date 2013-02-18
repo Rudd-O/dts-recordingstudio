@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+if [ "$1" == "" -o "" == "$2" ] ; then
+	echo usage: $0 original.wav 44100.wav
+	exit 64
+fi
+
+if file "$1" | grep -q 44100 ; then
+    true
+else
+    sndfile-resample -to 44100 -c 0 "$1" "$2"
+fi
