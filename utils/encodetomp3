@@ -2,13 +2,16 @@
 
 set -e
 
-[ -f "$1" ] || { echo usage: encodetomp3 filename ; exit 64 ; }
+[ -f "$1" ] || { echo usage: encodetomp3 filename [aftershow?] ; exit 64 ; }
 
 [ -n "$STUDIOARCHIVEDIR" ]   || export STUDIOARCHIVEDIR=~/Documents/Studio\ archive
 [ -n "$SHOWNUMBERREGEXP" ]   || export SHOWNUMBERREGEXP="Decline to State show (\d+)"
 [ -n "$SHOWTITLEPREFIX" ]    || export SHOWTITLEPREFIX="Show #"
 [ -n "$SHOWFILENAMEPREFIX" ] || export SHOWFILENAMEPREFIX="Decline to State show "
 [ -n "$SHOWSOURCEURL" ]      || export SHOWSOURCEURL="http://declinefm.com/archives"
+
+export AFTERSHOW=0
+if [ -n "$2" ] ; then export AFTERSHOW=1 ; fi
 
 enddir="$STUDIOARCHIVEDIR"/`date "+%Y-%m-%d"`
 
@@ -20,6 +23,7 @@ import re
 
 showurl = os.environ["SHOWSOURCEURL"]
 shownumberexp = os.environ["SHOWNUMBERREGEXP"]
+aftershow = os.environ["AFTERSHOW"]
 
 req = urllib2.urlopen(showurl)
 data = req.read()
@@ -29,18 +33,37 @@ urls = [ urllib.unquote(u) for u in urls ]
 matches = [ int(re.findall(shownumberexp,u)[0]) for u in urls if re.findall(shownumberexp,u) ]
 highest = max(matches)
 next = highest + 1
-print "%04d"%next
+if aftershow == "0":
+    print "%04d"%next
+elif aftershow == "1":
+    next = highest + 0.1
+    print "%06.1f"%next
+else: assert 0
 '`
-showshortnum=`python -c "print int('$shownum')"`
+
+if [ "$AFTERSHOW" == "1" ] ; then
+    showshortnum=`python -c "print float('$shownum')"`
+else
+    showshortnum=`python -c "print int('$shownum')"`
+fi
+
 longdate=`date "+%B %d %Y"`
 
-filenametoupload="$enddir"/"$SHOWFILENAMEPREFIX""$shownum $longdate.mp3"
+if [ "$AFTERSHOW" == "1" ] ; then
+    filenametoupload="$enddir"/"$SHOWFILENAMEPREFIX""$shownum Aftershow for $longdate.mp3"
+else
+    filenametoupload="$enddir"/"$SHOWFILENAMEPREFIX""$shownum $longdate.mp3"
+fi
 year=`date "+%Y"`
 if [ ! -f "$filenametoupload" ] ; then
 lame --replaygain-accurate -q0 -b 96 "$1" "$filenametoupload"
 fi
 
-showtitle="$SHOWTITLEPREFIX""$showshortnum: $longdate"
+if [ "$AFTERSHOW" == "1" ] ; then
+    showtitle="$SHOWTITLEPREFIX""$showshortnum: Aftershow for $longdate"
+else
+    showtitle="$SHOWTITLEPREFIX""$showshortnum: $longdate"
+fi
 id3tag -a"The Decline to State team" -s"$showtitle" -y$year "$filenametoupload"
 
 echo
