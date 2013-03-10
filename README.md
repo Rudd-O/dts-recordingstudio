@@ -1,5 +1,10 @@
 #Introduction to the Studio
 
+| Donate to support this free software |
+|:------------------------------------:|
+| <img width="164" height="164" title="" alt="" src="doc/bitcoin.png" /> |
+| [1K1ZDMJss4W9eK3QNppgtvHq91xUpr78gp](bitcoin:1K1ZDMJss4W9eK3QNppgtvHq91xUpr78gp) |
+
 The Studio is an Ansible playbook and collection of related software that will
 launch an EBS-backed Amazon EC2 instance with Ubuntu 12.04 on it, then
 configure it fully into an Internet radio broadcasting studio that can also be
