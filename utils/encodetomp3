@@ -2,7 +2,7 @@
 
 set -e
 
-[ -f "$1" ] || { echo usage: encodetomp3 filename [aftershow?] ; exit 64 ; }
+[ -f "$1" ] || { echo usage: encodetomp3 filename [num] [yyyy-mm-dd] [aftershow?] ; exit 64 ; }
 
 [ -n "$STUDIOARCHIVEDIR" ]   || export STUDIOARCHIVEDIR=~/Documents/Studio\ archive
 [ -n "$SHOWNUMBERREGEXP" ]   || export SHOWNUMBERREGEXP="Decline to State show (\d+)"
@@ -11,12 +11,22 @@ set -e
 [ -n "$SHOWSOURCEURL" ]      || export SHOWSOURCEURL="http://declinefm.com/archives"
 
 export AFTERSHOW=0
-if [ -n "$2" ] ; then export AFTERSHOW=1 ; fi
+if [ -n "$4" ] ; then export AFTERSHOW=1 ; fi
 
-enddir="$STUDIOARCHIVEDIR"/`date "+%Y-%m-%d"`
+shortdate=`date "+%Y-%m-%d"`
+if [ -n "$3" ] ; then shortdate="$3" ; fi
 
-mkdir -p "$enddir"
-shownum=`python -c 'import urllib2, urllib
+enddir="$STUDIOARCHIVEDIR"/"$shortdate"
+
+if [ -n "$2" ] ; then
+    shownum="$2"
+    if [ "$AFTERSHOW" == "1" ] ; then
+        shownum=`echo -n "$shownum" | python -c 'import sys; print "%06.1f"%float(sys.stdin.read())'`
+    else
+        shownum=`echo -n "$shownum" | python -c 'import sys; print "%04d"%int(sys.stdin.read())'`
+    fi
+else
+    shownum=`python -c 'import urllib2, urllib
 import xml.dom.minidom as dom
 import os.path
 import re
@@ -40,6 +50,7 @@ elif aftershow == "1":
     print "%06.1f"%next
 else: assert 0
 '`
+fi
 
 if [ "$AFTERSHOW" == "1" ] ; then
     showshortnum=`python -c "print float('$shownum')"`
@@ -47,23 +58,23 @@ else
     showshortnum=`python -c "print int('$shownum')"`
 fi
 
-longdate=`date "+%B %d %Y"`
+longdate=`echo -n "$shortdate" | python -c 'import sys, time; print time.strftime("%B %d %Y",time.strptime(sys.stdin.read(), "%Y-%m-%d"))'`
+year=`echo -n "$shortdate" | python -c 'import sys, time; print time.strftime("%Y",time.strptime(sys.stdin.read(), "%Y-%m-%d"))'`
 
 if [ "$AFTERSHOW" == "1" ] ; then
     filenametoupload="$enddir"/"$SHOWFILENAMEPREFIX""$shownum Aftershow for $longdate.mp3"
+    showtitle="$SHOWTITLEPREFIX""$showshortnum: Aftershow for $longdate"
 else
     filenametoupload="$enddir"/"$SHOWFILENAMEPREFIX""$shownum $longdate.mp3"
+    showtitle="$SHOWTITLEPREFIX""$showshortnum: $longdate"
 fi
-year=`date "+%Y"`
+
+mkdir -p "$enddir"
+
 if [ ! -f "$filenametoupload" ] ; then
 lame --replaygain-accurate -q0 -b 96 "$1" "$filenametoupload"
 fi
 
-if [ "$AFTERSHOW" == "1" ] ; then
-    showtitle="$SHOWTITLEPREFIX""$showshortnum: Aftershow for $longdate"
-else
-    showtitle="$SHOWTITLEPREFIX""$showshortnum: $longdate"
-fi
 id3tag -a"The Decline to State team" -s"$showtitle" -y$year "$filenametoupload"
 
 echo
