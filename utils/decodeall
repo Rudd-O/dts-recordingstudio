@@ -10,7 +10,14 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 for a in "$STUDIOARCHIVEDIR"/*.ogg ; do
     test -f "$a" || continue
     test -f "$a.wav" && continue || true
-    "$DIR"/decodeoggtofloatwav "$a" "$a.wav" &
+    "$DIR"/decodeoggtofloatwav "$a" "$a.resampled.wav" &
+done
+
+wait
+
+for a in "$STUDIOARCHIVEDIR"/*.resampled.wav ; do
+    properfilename=`echo "$a" | sed 's/.resampled.wav$/.wav/'`
+    "$DIR"/resamplewav "$a" "$properfilename" &
 done
 
 wait
