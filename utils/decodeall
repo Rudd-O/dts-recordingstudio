@@ -13,3 +13,4 @@ for a in "$STUDIOARCHIVEDIR"/*.ogg ; do
     "$DIR"/decodeandresampleoggtofloatwav "$a" "$a.wav" &
 done
 
+wait
