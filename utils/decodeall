@@ -9,7 +9,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 for a in "$STUDIOARCHIVEDIR"/*.ogg ; do
     test -f "$a" || continue
-    test -f "$a.wav" || continue
+    test -f "$a.wav" && continue || true
     "$DIR"/decodeoggtofloatwav "$a" "$a.wav" &
 done
 
