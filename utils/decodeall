@@ -21,3 +21,7 @@ for a in "$STUDIOARCHIVEDIR"/*.resampled.wav ; do
 done
 
 wait
+
+for a in "$STUDIOARCHIVEDIR"/*.resampled.wav ; do
+    rm -f "$a"
+done
