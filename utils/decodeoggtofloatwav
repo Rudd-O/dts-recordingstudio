@@ -5,4 +5,4 @@ if [ "$1" == "" -o "" == "$2" ] ; then
 	exit 64
 fi
 
-gst-launch-0.10 filesrc location="$1" ! oggdemux ! vorbisdec ! wavenc ! filesink location="$2"
+gst-launch-1.0 filesrc location="$1" ! oggdemux ! vorbisdec ! audioresample quality=10 ! audio/x-raw,format=F32LE,rate=44100 ! wavenc ! filesink location="$2"
