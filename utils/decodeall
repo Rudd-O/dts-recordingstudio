@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+unset CDPATH
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+[ -n "$STUDIOARCHIVEDIR" ]   || export STUDIOARCHIVEDIR=~/Documents/Studio\ archive
+
+for a in "$STUDIOARCHIVEDIR"/*.ogg ; do
+    test -f "$a" || continue
+    test -f "$a.wav" && continue || true
+    "$DIR"/decodeoggtofloatwav "$a" "$a.wav" &
+done
+
+wait
