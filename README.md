@@ -1,11 +1,11 @@
-#Introduction to the Studio
+#The Decline to State recording studio
 
 | Donate to support this free software |
 |:------------------------------------:|
 | <img width="164" height="164" title="" alt="" src="doc/bitcoin.png" /> |
 | [1K1ZDMJss4W9eK3QNppgtvHq91xUpr78gp](bitcoin:1K1ZDMJss4W9eK3QNppgtvHq91xUpr78gp) |
 
-The Studio is an Ansible playbook and collection of related software that will
+This recording studio is an Ansible playbook and collection of related software that will
 launch an EBS-backed Amazon EC2 instance with Ubuntu 12.04 on it, then
 configure it fully into an Internet radio broadcasting studio that can also be
 used to record high-quality podcasts:
@@ -21,6 +21,10 @@ We the peeps at [Decline to State](http://declinefm.com) use it to record our
 radio show every Wednesday, and it works wonders.  We decided to release it
 as open source software (under the AGPLv3) because this is software that can
 power many Internet radio stations run by people across the globe.
+
+This software is a companion to the
+[Decline to State publishing studio](https://github.com/Rudd-O/dts-publishingstudio),
+which you can use to edit recorded shows and publish them online.
 
 #Setting up the software to run on your computer
 
@@ -113,8 +117,8 @@ broadcast and record locally.
 
 To download the recordings, retrieve the files in
 `/home/ubuntu/Studio/Recordings` by copying them to your computer with an SFTP
-client or the command `utils/download-recordings` (which uses rsync to do its
-job).  In either of those cases, your SFTP client or SSH configuration must
+client (the Decline to State publishing studio has inbuilt support for this).
+In either of those cases, your SFTP client or SSH configuration must
 have the private SSH key that corresponds to the public SSH key that you used
 when launching the studio for the first time.  Alternatively, you could generate
 a new key pair and then deploy the public key to the `ubuntu` user's SSH
