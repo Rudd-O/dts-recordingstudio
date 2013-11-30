@@ -1,8 +1,0 @@
-#!/bin/bash -e
-
-if [ "$1" == "" -o "" == "$2" ] ; then
-	echo usage: $0 oggfilename.ogg wavfilename.wav
-	exit 64
-fi
-
-gst-launch-1.0 filesrc location="$1" ! oggdemux ! vorbisdec ! audioresample quality=10 ! audio/x-raw,format=F32LE,rate=44100 ! wavenc ! filesink location="$2"
