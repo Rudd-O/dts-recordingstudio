@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source ~/.awscreds
+
+if [ -z "$S3_BUCKET" ] ; then
+  S3_BUCKET=declinefm.com
+fi
+
+cd ~/Studio/Recordings
+s3cmd sync --no-delete-removed . s3://$S3_BUCKET/Recordings/
+pkill -INT gst-launch

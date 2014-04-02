@@ -32,6 +32,9 @@
 
   - name:     set up loading of Amazon credentials
     lineinfile: dest=/home/ubuntu/.bashrc state=present regexp="^source ~/.awscreds" line="source ~/.awscreds"
+  - name:     set up Amazon S3 bucket name
+    lineinfile: dest=.awscreds mode=0600 create=yes state=present regexp="^export S3_BUCKET=" line="export S3_BUCKET={{ s3bucket }}"
+    when:     s3bucket is defined
   - name:     set up Amazon access key ID
     lineinfile: dest=.awscreds mode=0600 create=yes state=present regexp="^export AWS_ACCESS_KEY_ID=" line="export AWS_ACCESS_KEY_ID={{ accesskeyid }}"
     when:     accesskeyid is defined
@@ -130,7 +133,9 @@
     - intro
     - outro
     - recordbroadcast
+    - stop-recordbroadcast
     - setup-recordbroadcast
+    - uploadrecordings
     - mumble
     - skype
     - startjack

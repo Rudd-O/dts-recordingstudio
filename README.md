@@ -49,11 +49,16 @@ which you can use to edit recorded shows and publish them online.
 
 #Configuring the instance to act as a studio
 
-* The first time (to set a password, AWS access key ID, AWS secret key)
-  * `./converge --extra-vars "changepassword=<new password> accesskeyid=<AWS access key ID> secretaccesskey=<AWS secret key>"`
-  * The password must be up to eight characters (VNC limitations).
-* Right after that step, SSH as the user ubuntu into the newly-setup studio
-  * Once in, run the `setup-recordbroadcast` program and answer its questions
+* The first time, set a password, AWS IAM access key ID, AWS IAM secret key,
+  and S3 bucket for uploads:
+
+    ./converge --extra-vars \
+    "changepassword=<new password> "\
+    "accesskeyid=<AWS IAM access key ID> "\
+    "secretaccesskey=<AWS IAM secret key> "\
+    "s3bucket=<S3 bucket name> "
+
+* The password must be up to eight characters (VNC limitations).
 
 From this point on, whenever the setup playbook changes, you can just run`./converge` to upgrade the studio.
 
@@ -86,8 +91,8 @@ After that, copy your show intro to `/home/ubuntu/Studio/Clips/Intro.wav`
 media necessary to run the live show's intro and outro commands.
 
 Then you need to set up the record and broadcast facilities.  In a terminal,
-run command `recordbroadcast` and answer the questions related to your Icecast
-server that you will be asked.
+run command `setup-recordbroadcast` and answer the questions related to your
+Icecast server that you will be asked.
 
 After you're done with these steps, either reboot or log out and log back in
 to the EC2 instance (it is normal to get your VNC session disconnected when
@@ -113,12 +118,18 @@ Finally, the `intro` and `outro` commands (which you can run on the terminal)
 will play back on the live stream and into the Mumble and Skype audio inputs,
 but not on the recorded show.
 
-To stop recording and broadcast, run the command `pkill -INT gst-launch`.  It
-is advisable to stop the recording and broadcast before downloading the file.
+To stop the recording and broadcast, run the command `stop-recordbroadcast`.
+It is advisable to stop the recording and broadcast before uploading the
+recordings to S3 or downloading the recordings to your home computer.
 
 To start the recording and broadcast once again, run the command
 `recordbroadcast`.  This starts the gst-launch GStreamer processes that
 broadcast and record locally.
+
+To upload the recordings to S3, run the command `uploadrecordings`.  This
+command will sync the recordings stored locally in
+`/home/ubuntu/Studio/Recordings` to your S3 bucket.  Remember to stop the
+recording and broadcasting before doing this.
 
 To download the recordings, retrieve the files in
 `/home/ubuntu/Studio/Recordings` by copying them to your computer with an SFTP
