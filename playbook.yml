@@ -42,10 +42,12 @@
     notify:   redo s3cfg
   - name:     obtain access key
     shell:    . ~/.awscreds ; test -n "$AWS_ACCESS_KEY_ID" && echo $AWS_ACCESS_KEY_ID || { echo "You need to set up the Amazon access credentials with --extra-vars.  See README.md." ; false ; }
+    always_run: yes
     register: aws_access_key_id
     changed_when: False
   - name:     obtain secret key
     shell:    . ~/.awscreds ; test -n "$AWS_SECRET_ACCESS_KEY" && echo $AWS_SECRET_ACCESS_KEY || { echo "You need to set up the Amazon access credentials with --extra-vars.  See README.md." ; false ; }
+    always_run: yes
     register: aws_secret_access_key
     changed_when: False
   - name:     generate s3cfg file

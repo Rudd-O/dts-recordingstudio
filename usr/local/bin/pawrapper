@@ -39,4 +39,4 @@ if [ "$pulseaudio_running" == "no" ] ; then
 	sleep 1
 	export DBUS_SESSION_BUS_ADDRESS="$OLDBUS"
 fi
-PULSE_SERVER=/tmp/pulse-"$APPNAME".socket taskset 0x00000001 exec chrt -f 4 "$@"
+PULSE_SERVER=/tmp/pulse-"$APPNAME".socket exec taskset 0x00000001 chrt -f 4 "$@"
