@@ -32,7 +32,7 @@ BROADCAST=YES
 source "$HOME"/.recordbroadcast || { notify-send -t 60 'Broadcast recording not configured' 'Configure broadcast recording by opening a terminal and running the command setup-recordbroadcast.  Audio will only be recorded, but not broadcast, until you go through this setup.' ; BROADCAST=NO ; }
 
 if [ "$BROADCAST" == "YES" ] ; then
-gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
+chrt -f 3 gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
    ! 'audio/x-raw-float,channels=1' \
    ! queue \
    ! tee name=formattee \
@@ -51,14 +51,10 @@ gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
 fi
 
 cd $recordingdir
-gst-launch -e jackaudiosrc name=premastered client-name=premastered \
+chrt -f 3 gst-launch -e jackaudiosrc name=premastered client-name=premastered \
    ! 'audio/x-raw-float,channels=1' \
    ! vorbisenc quality=0.9 \
    ! oggmux \
    ! queue \
    ! filesink append=true location="$filename" \
 &
-sleep 1
-for a in `pgrep gst-launch` ; do
-sudo chrt -a -f -p 66 $a
-done

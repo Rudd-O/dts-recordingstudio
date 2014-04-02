@@ -28,30 +28,34 @@ which you can use to edit recorded shows and publish them online.
 
 #Setting up the software to run on your computer
 
+* make sure your administrative Amazon credentials are in the environment
 * install git on your computer
+* install ansible on your computer
 * clone this repository
-* `git submodule update`
-* install ansible dependencies (PyYAML, jinja2, paramiko, python-zmq, python-keyczar)
-* `source ansible/hacking/env-setup`
+* change directory into this repository
 
 #Launching the instance
 
-* make sure your amazon credentials are in the environment
 * create the necessary elastic IP through the EC2 console
+* create an S3 bucket to store the recordings
+* make sure that a default security group exists, and that it allows connections to VNC and SSH
+  * this is the security group that will be used to create the studio
+* create an IAM keypair
+* give the IAM keypair access to list keys and upload files to said bucket
 * change the settings section in the launch script
   * the correct elastic IP needs to be there
-  * the correct hostname needs to be there, and resolving to the IP
+  * the correct hostname needs to be there, and resolving to the right IP
   * put the public SSH key that you want to use to access the server
-* change the hosts file to point to the elastic IP address of the studio
-  * originally it says studio.declinefm.com
 
 #Configuring the instance to act as a studio
 
-* The first time (to set a password)
-  * `./converge --extra-vars "changepassword=yournewpassword"`
+* The first time (to set a password, AWS access key ID, AWS secret key)
+  * `./converge --extra-vars "changepassword=<new password> accesskeyid=<AWS access key ID> secretaccesskey=<AWS secret key>"`
   * The password must be up to eight characters (VNC limitations).
-* From then on
-  * `./converge`
+* Right after that step, SSH as the user ubuntu into the newly-setup studio
+  * Once in, run the `setup-recordbroadcast` program and answer its questions
+
+From this point on, whenever the setup playbook changes, you can just run`./converge` to upgrade the studio.
 
 #Connecting to the studio
 
@@ -99,10 +103,11 @@ JACK suite of applications, mixer, Mumble and Skype already running. Audio
 coming from Mumble will be relayed to Skype, and vice versa, so people
 calling in from Skype will be able to talk with Mumble channel participants.
 
-In addition to that, the recording and broadcast will be automatically
-started in the background.  This will promptly broadcast your show to your
-Icecast server, and record it into `/home/ubuntu/Studio/Recordings` as an
-Ogg Vorbis high-quality floating-point 48 KHz audio file.
+In addition to that, the recording and broadcast can now be started
+in the background.  When you type the command `recordbroadcast`, this will
+promptly broadcast your show to your Icecast server, and record it
+into `/home/ubuntu/Studio/Recordings` as an Ogg Vorbis high-quality
+floating-point 48 KHz audio file.
 
 Finally, the `intro` and `outro` commands (which you can run on the terminal)
 will play back on the live stream and into the Mumble and Skype audio inputs,
