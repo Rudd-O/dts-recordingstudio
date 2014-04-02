@@ -10,11 +10,11 @@ killall -9 qjackctl.real jackd jackdbus || true
 pkill -9 -f jack_mixer || true
 
 sleep 0.25
-jackd -R -d dummy -r 48000 -C 1 -p 2048 &
+taskset 0x00000002 jackd -c s -R -d dummy -r 48000 -C 1 -w 63333 -p 512 &
 
 sleep 1
 qjackctl -a $HOME/.patchbay.xml -s &
 
-jack_mixer --no-lash -c $HOME/.jack_mixer.xml &
-#sleep 0.25
-#sudo chrt -a -f -p 69 `pgrep -f jack_mixer`
+taskset 0x00000002 jack_mixer --no-lash -c $HOME/.jack_mixer.xml &
+sleep 0.25
+sudo chrt -a -f -p 9 `pgrep -f jack_mixer`

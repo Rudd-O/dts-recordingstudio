@@ -2,4 +2,4 @@
 
 ulimit -l unlimited
 ulimit -r 99
-chrt -f 60 aplay -D pcm.aux_live $HOME/Studio/Clips/Outro.wav
+taskset 0x00000001 chrt -f 4 aplay -D pcm.aux_live $HOME/Studio/Clips/Outro.wav

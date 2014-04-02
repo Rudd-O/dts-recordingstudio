@@ -35,8 +35,8 @@ if [ "$pulseaudio_running" == "no" ] ; then
 	export DBUS_SESSION_BUS_ADDRESS
 	sleep 0.25
 	sed "s/%APP%/$APPNAME/" < /etc/pulse/default.pa.template > "$temppa"
-	pulseaudio -nF "$temppa" --realtime &
-	sleep 0.5
+	taskset 0x00000002 chrt -f 5 pulseaudio --realtime -nF "$temppa" &
+	sleep 1
 	export DBUS_SESSION_BUS_ADDRESS="$OLDBUS"
 fi
-PULSE_SERVER=/tmp/pulse-"$APPNAME".socket exec chrt -f 4 "$@"
+PULSE_SERVER=/tmp/pulse-"$APPNAME".socket taskset 0x00000001 exec chrt -f 4 "$@"

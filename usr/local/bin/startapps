@@ -1,14 +1,27 @@
 #!/bin/bash
 
+exec &>> $HOME/Studio/Logs/startapps-errors
+
+killall -9 pulseaudio
+killall -9 mumble
+killall -9 skype
+
+echo waiting for jackd >> /dev/stderr
 while ! pgrep jackd ; do
-        echo waiting for jackd >> /dev/stderr
-        sleep 1
+        sleep 0.25
 done
 
+echo waiting for QjackCtl >> /dev/stderr
 while ! pgrep qjackctl ; do
-        echo waiting for QjackCtl >> /dev/stderr
-        sleep 1
+        sleep 0.25
 done
+
+echo waiting for jack_mixer >> /dev/stderr
+while ! pgrep -f jack_mixer ; do
+        sleep 0.25
+done
+
+sleep 5
 
 /usr/local/bin/mumble &
 /usr/local/bin/skype  &

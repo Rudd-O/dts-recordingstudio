@@ -138,6 +138,9 @@
   - name: create password reset script
     copy: src=usr/local/bin/resetpassword dest=/usr/local/bin/resetpassword mode=0700
 
+  - name: disable package list updates
+    copy: src=etc/apt/apt.conf.d/99overrides dest=/etc/apt/apt.conf.d/99overrides
+
   - name: configure pulse
     copy: src=etc/pulse/{{ item }} dest=/etc/pulse/{{ item }}
     notify: restart lightdm
