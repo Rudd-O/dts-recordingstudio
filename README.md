@@ -37,11 +37,11 @@ which you can use to edit recorded shows and publish them online.
 #Launching the instance
 
 * create the necessary elastic IP through the EC2 console
-* create an S3 bucket to store the recordings
+* optionally, create an S3 bucket to store the recordings
 * make sure that a default security group exists, and that it allows connections to VNC and SSH
   * this is the security group that will be used to create the studio
-* create an IAM keypair
-* give the IAM keypair access to list keys and upload files to said bucket
+* if you created an S3 bucket, create an IAM keypair
+* if you created an IAM keypair, give the IAM keypair access to list keys and upload files to said bucket
 * change the settings section in the launch script
   * the correct elastic IP needs to be there
   * the correct hostname needs to be there, and resolving to the right IP
@@ -52,11 +52,20 @@ which you can use to edit recorded shows and publish them online.
 * The first time, set a password, AWS IAM access key ID, AWS IAM secret key,
   and S3 bucket for uploads:
 
-    ./converge --extra-vars \
-    "changepassword=<new password> "\
-    "accesskeyid=<AWS IAM access key ID> "\
-    "secretaccesskey=<AWS IAM secret key> "\
-    "s3bucket=<S3 bucket name> "
+```
+./converge --extra-vars \
+"changepassword=<new password> "\
+"accesskeyid=<AWS IAM access key ID> "\
+"secretaccesskey=<AWS IAM secret key> "\
+"s3bucket=<S3 bucket name> "
+```
+
+* If you did not create an S3 bucket and IAM identity, set up the studio this way instead:
+
+```
+./converge --extra-vars \
+"changepassword=<new password>"
+```
 
 * The password must be up to eight characters (VNC limitations).
 
@@ -126,19 +135,25 @@ To start the recording and broadcast once again, run the command
 `recordbroadcast`.  This starts the gst-launch GStreamer processes that
 broadcast and record locally.
 
-To upload the recordings to S3, run the command `uploadrecordings`.  This
+If you enabled S3 support in your studio, you can upload the recordings
+automatically to S3. To do that, run the command `uploadrecordings`.  This
 command will sync the recordings stored locally in
 `/home/ubuntu/Studio/Recordings` to your S3 bucket.  Remember to stop the
 recording and broadcasting before doing this.
 
-To download the recordings, retrieve the files in
-`/home/ubuntu/Studio/Recordings` by copying them to your computer with an SFTP
-client (the Decline to State publishing studio has inbuilt support for this).
-In either of those cases, your SFTP client or SSH configuration must
-have the private SSH key that corresponds to the public SSH key that you used
-when launching the studio for the first time.  Alternatively, you could generate
-a new key pair and then deploy the public key to the `ubuntu` user's SSH
-`/home/ubuntu/.ssh/authorized_keys` file in the studio.
+To download the recordings, there are two ways:
+
+* If you enabled S3 support in your studio: you can download the files
+  from your Amazon S3 AWS console.  They should be in the S3 bucket you
+  created, under foldor `Recordings/`.
+* You can also retrieve the files in `/home/ubuntu/Studio/Recordings`
+  by copying them to your computer with an SFTP client (the Decline
+  to State publishing studio has inbuilt support for this). Your SFTP client
+  or SSH configuration must have the private SSH key that corresponds to
+  the public SSH key that you used when launching the studio for the
+  first time.  Alternatively, you could generate a new key pair and
+  then deploy the public key to the `ubuntu` user's SSH
+  `/home/ubuntu/.ssh/authorized_keys` file in the studio.
 
 #Checklist for testing the studio functionality
 
