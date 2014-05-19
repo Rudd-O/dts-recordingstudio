@@ -1,11 +1,14 @@
 #!/bin/bash
 
-source ~/.awscreds
+UPLOAD=yes
+source ~/.awscreds || { notify-send -t 60 'Upload to S3 not configured' 'Configure upload to S3 by setting up the accesskeyid, secretaccesskey and s3bucket options as explained in the README.  Then try again.' ; UPLOAD=NO ; }
 
-if [ -z "$S3_BUCKET" ] ; then
-  S3_BUCKET=declinefm.com
+if [ "$UPLOAD" == "yes" ] ; then
+    if [ -z "$S3_BUCKET" ] ; then
+      S3_BUCKET=declinefm.com
+    fi
+
+    /usr/local/bin/stop-recordbroadcast
+    cd ~/Studio/Recordings
+    s3cmd sync --no-delete-removed . s3://$S3_BUCKET/Recordings/
 fi
-
-cd ~/Studio/Recordings
-s3cmd sync --no-delete-removed . s3://$S3_BUCKET/Recordings/
-pkill -INT gst-launch
