@@ -36,18 +36,7 @@ source "$HOME"/.recordbroadcast || { notify-send -t 60 'Broadcast recording not 
 if [ "$BROADCAST" == "YES" ] ; then
 
 if [ "$SSL" == "YES" -o "$SSL" == "yes" ] ; then
-    echo "
-verify = 2
-options = NO_SSLv2
-options = SINGLE_ECDH_USE
-options = SINGLE_DH_USE
-
-[radio]
-client=yes
-accept=127.0.0.1:8000
-connect=$IP:$PORT
-" > ~/.stunnel
-    stunnel ~/.stunnel -c &
+    stunnel -r "$IP:$PORT" -c -d 127.0.0.1:8000 -P '' -D 6 -o /dev/stderr
     PORT=8000
     IP=127.0.0.1
 fi
