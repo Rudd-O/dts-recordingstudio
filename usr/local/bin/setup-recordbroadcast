@@ -14,8 +14,9 @@ def quote(string): return "\\'".join("'" + p + "'" for p in string.split("'"))
 # -------------------
 
 configuration_options = (
+  ("SSL","tunnel traffic over SSL ('yes' or 'YES', without the quotes, to enable)"),
   ("IP","IP address of the Icecast server"),
-  ("PORT","port where the Icecast server is listening"),
+  ("PORT","port where the Icecast server is listening (usually 8000 unless SSL is on, in which case it should be 443)"),
   ("SHOW_NAME","name of your radio show"),
   ("SHOW_DESCRIPTION","description of your radio show"),
   ("SHOW_URL","URL pointing to your radio show's Web page"),
@@ -33,6 +34,7 @@ configuration_defaults = {
   "MP3_MOUNT":"/radioshow.mp3",
   "OGG_MOUNT":"/radioshow.ogg",
   "ICECAST_PASSWORD":"",
+  "SSL":"NO",
 }
 
 configuration_file = os.path.expanduser("~/.recordbroadcast")

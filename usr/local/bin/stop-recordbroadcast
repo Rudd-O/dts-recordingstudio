@@ -1,3 +1,5 @@
 #!/bin/bash
 
 pkill -INT gst-launch && sleep 5 || true
+
+pkill -INT stunnel && sleep 1 || true

@@ -23,6 +23,8 @@ pgrep gst-launch || {
 
 pkill -INT gst-launch && sleep 2 || true
 
+pkill -INT stunnel && sleep 1 || true
+
 # this script expects this directory to exist and be writable
 recordingdir=$HOME/Studio/Recordings
 # this script will create this file inside the recording dir
@@ -32,6 +34,24 @@ BROADCAST=YES
 source "$HOME"/.recordbroadcast || { notify-send -t 60 'Broadcast recording not configured' 'Configure broadcast recording by opening a terminal and running the command setup-recordbroadcast.  Audio will only be recorded, but not broadcast, until you go through this setup.' ; BROADCAST=NO ; }
 
 if [ "$BROADCAST" == "YES" ] ; then
+
+if [ "$SSL" == "YES" -o "$SSL" == "yes" ] ; then
+    echo "
+verify = 2
+options = NO_SSLv2
+options = SINGLE_ECDH_USE
+options = SINGLE_DH_USE
+
+[radio]
+client=yes
+accept=127.0.0.1:8000
+connect=$IP:$PORT
+" > ~/.stunnel
+    stunnel ~/.stunnel -c &
+    PORT=8000
+    IP=127.0.0.1
+fi
+
 taskset 0x00000001 chrt -f 3 gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
    ! 'audio/x-raw-float,channels=1' \
    ! queue \

@@ -123,6 +123,7 @@
     - gnome-terminal
     - ubuntu-desktop
     - s3cmd
+    - stunnel4
 
   - name: create scripts
     copy: src=usr/local/bin/{{ item }} dest=/usr/local/bin/{{ item }} mode=0755
