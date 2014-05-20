@@ -81,10 +81,13 @@
   - name:   set dpkg selections
     action: command /usr/bin/debconf-set-selections /etc/dpkg-selections
     when:   store_dpkg_selections|changed
-  - name:   add the partner repo to apt
-    apt_repository: repo="deb http://archive.canonical.com/ {{ ansible_lsb.codename }} partner"
-  - name:   add latest mumble PPA
-    apt_repository: repo='ppa:mumble/release'
+  - name:   add update PPAs and partner repo
+    apt_repository: repo="{{ item }}"
+    with_items:
+    - 'deb http://archive.canonical.com/ {{ ansible_lsb.codename }} partner'
+    - 'ppa:mumble/release'
+    - 'ppa:mojocode/ppa'
+
   - name:   install necessary software
     apt:    pkg={{ item }} state=present
     with_items:
@@ -124,6 +127,7 @@
     - ubuntu-desktop
     - s3cmd
     - stunnel4
+    - git
 
   - name: create scripts
     copy: src=usr/local/bin/{{ item }} dest=/usr/local/bin/{{ item }} mode=0755

@@ -35,12 +35,6 @@ source "$HOME"/.recordbroadcast || { notify-send -t 60 'Broadcast recording not 
 
 if [ "$BROADCAST" == "YES" ] ; then
 
-if [ "$SSL" == "YES" -o "$SSL" == "yes" ] ; then
-    stunnel -r "$IP:$PORT" -c -d 127.0.0.1:8000 -P '' -D 6 -o /dev/stderr
-    PORT=8000
-    IP=127.0.0.1
-fi
-
 taskset 0x00000001 chrt -f 3 gst-launch -e jackaudiosrc name=live client-name=live latency-time=20000 \
    ! 'audio/x-raw-float,channels=1' \
    ! queue \
